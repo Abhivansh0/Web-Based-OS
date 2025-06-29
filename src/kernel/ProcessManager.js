@@ -7,7 +7,7 @@ class ProcessManager{
     createProcess(processName,size){
         const pid = this.pidCounter++;
         const success = this.memoryManager.allocate(pid, size);
-            const exists = this.processes.some(p => p.pid === pid);
+        const exists = this.processes.some(p => p.pid === pid);
         if (exists) {
         console.warn(`Process with PID ${pid} already exists.`);
         return null;
@@ -44,4 +44,6 @@ class ProcessManager{
         }
     }
 }
+
+export default ProcessManager
 
