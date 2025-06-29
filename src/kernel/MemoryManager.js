@@ -9,6 +9,12 @@ class memoryManager {
     }
 
     allocate(pid, size) {
+        for(let i = 0; i< this.blocks.length; i++){
+            if (this.blocks[i].pid === pid) {
+                return null
+            }
+        }
+
         for (let i = 0; i < this.blocks.length; i++) {
             const block = this.blocks[i]
             if (block.pid === null && block.size >= size) {
@@ -54,7 +60,6 @@ class memoryManager {
             }
         }
     }
-
     getMemoryState(){
         return this.blocks;
     }
@@ -66,6 +71,8 @@ class memoryManager {
         return this.available
     }
 }
+
+export default memoryManager;
 
 
 
