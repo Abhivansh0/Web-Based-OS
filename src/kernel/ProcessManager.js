@@ -1,5 +1,4 @@
 class ProcessManager{
-    
     constructor(memoryManager){
         this.processes = [];
         this.pidCounter = 0;   
@@ -45,3 +44,4 @@ class ProcessManager{
         }
     }
 }
+
