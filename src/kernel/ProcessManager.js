@@ -1,49 +1,49 @@
-class processManager{
+class processManager {
     /**
  * @param {import('./MemoryManager.js').default} MemoryManager
  */
-    constructor(MemoryManager){
-        this.MemoryManager=MemoryManager;
-        this.pidCounter=0;
+    constructor(MemoryManager) {
+        this.MemoryManager = MemoryManager;
+        this.pidCounter = 0;
         this.processes = []
-        this.readyQueue=[];
-        this.waitingQueue=[];
+        this.readyQueue = [];
+        this.waitingQueue = [];
         this.running = null
     }
-    createProcess(ProcessName,size){
-        const pid= this.pidCounter++;
-        const success = this.MemoryManager.allocate(pid,size)
-        if(!success){
+    createProcess(ProcessName, size) {
+        const pid = this.pidCounter++;
+        const success = this.MemoryManager.allocate(pid, size)
+        if (!success) {
             return null;
         }
         const process = {
-            pid : pid ,
-            ProcessName : ProcessName ,
-            size : size ,
-            cpuUsage : 0,
-            state:"ready"
+            pid: pid,
+            ProcessName: ProcessName,
+            size: size,
+            cpuUsage: 0,
+            state: "ready"
         }
         this.processes.push(process)
         this.readyQueue.push(process);
         return process;
     }
 
-    contextSwitch(){
+    contextSwitch() {
         if (this.running) {
-            this.readyQueue.push(this.running)  
+            this.readyQueue.push(this.running)
             this.running.state = "ready"
         }
         this.running = this.readyQueue.shift() || null
     }
 
-    blockRunningProcess(){
+    blockRunningProcess() {
         if (this.running) {
             this.running.state = "waiting"
             this.waitingQueue.push(this.running)
             this.running = null
         }
     }
-    unblockProcess(pid){
+    unblockProcess(pid) {
         const index = this.waitingQueue.findIndex(p => p.pid === pid)
         if (index !== -1) {
             const proc = this.waitingQueue.splice(index, 1)[0]
@@ -54,37 +54,34 @@ class processManager{
 
     terminateProcess(pid) {
         this.MemoryManager.freeMemory(pid)
-
         if (this.running && this.running.pid === pid) {
             this.running = null
             return
         }
-
-        this.readyQueue = this.readyQueue.filter(p=> p.pid !== pid)
-        this.waitingQueue = this.waitingQueue.filter(p=> p.pid !== pid)
-        this.processes = this.processes.filter(p=> p.pid !== pid)
+        this.readyQueue = this.readyQueue.filter(p => p.pid !== pid)
+        this.waitingQueue = this.waitingQueue.filter(p => p.pid !== pid)
+        this.processes = this.processes.filter(p => p.pid !== pid)
     }
 
-    listProcesses(){
+    listProcesses() {
         return [
-            ...this.readyQueue.map(p => ({...p, state:"ready"})),
-            ...this.waitingQueue.map(p => ({...p, state:"waiting"})),
-            ...(this.running? [{...this.running, state:"running"}] : [])
+            ...this.readyQueue.map(p => ({ ...p, state: "ready" })),
+            ...this.waitingQueue.map(p => ({ ...p, state: "waiting" })),
+            ...(this.running ? [{ ...this.running, state: "running" }] : [])
 
         ]
     }
-    getRunningProcess(){
+    getRunningProcess() {
         return this.running
     }
-    getAllProcesses(){
+    getAllProcesses() {
         return this.processes;
     }
-    
-    getReadyQueue(){
+
+    getReadyQueue() {
         return this.readyQueue;
     }
-    getWaitingQueue(){
+    getWaitingQueue() {
         return this.waitingQueue;
     }
 }
-export default processManager
