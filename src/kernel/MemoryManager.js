@@ -1,4 +1,4 @@
-class memoryManager {
+class MemoryManager {
     constructor(totalMemory) {
         this.total = totalMemory
         this.available = totalMemory
@@ -72,7 +72,7 @@ class memoryManager {
     }
 }
 
-export default memoryManager;
+export default MemoryManager;
 
 
 

@@ -1,9 +1,14 @@
-class scheduler{
-    constructor(ProcessManager){
+class Scheduler{
+
+/**
+ * @param {import('./ProcessManager').default} processManager
+ */
+
+    constructor(processManager){
         this.totalCPU = 100
         this.usedCPU = 5
         this.availableCPU = this.totalCPU - this.usedCPU
-        this.pm = ProcessManager
+        this.pm = processManager
         this.current = 0
     }
 
@@ -50,3 +55,5 @@ class scheduler{
         return this.usedCPU
     }
 }
+
+export default Scheduler
