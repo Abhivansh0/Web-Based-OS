@@ -1,9 +1,7 @@
 class processManager{
-
     /**
  * @param {import('./MemoryManager.js').default} MemoryManager
  */
-
     constructor(MemoryManager){
         this.processes=[];
         this.ReadyQueue=[];
@@ -88,4 +86,4 @@ class processManager{
     GetWaitingQueue(){
         return this.WaitingQueue;
     }
-}
+
