@@ -85,3 +85,4 @@ class processManager {
         return this.waitingQueue;
     }
 }
+export default processManager
