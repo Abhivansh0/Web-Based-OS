@@ -1,4 +1,7 @@
 class processManager{
+    /**
+ * @param {import('./MemoryManager.js').default} MemoryManager
+ */
     constructor(MemoryManager){
         this.processes=[];
         this.ReadyQueue=[];
@@ -83,81 +86,4 @@ class processManager{
     GetWaitingQueue(){
         return this.WaitingQueue;
     }
-}
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// class ProcessManager{
-    
-//     constructor(memoryManager){
-//         this.processes = [];
-//         this.pidCounter = 0;   
-//         this.memoryManager = memoryManager;
-//     }
-//     createProcess(processName,size){
-//         const pid = this.pidCounter++;
-//         const success = this.memoryManager.allocate(pid, size);
-//          // const exists = this.processes.some(p => p.pid === pid);
-//         if (exists) {
-//         // console.warn(`Process with PID ${pid} already exists.`);
-//         return null;
-//     }
-
-        
-//         if (!success){
-//             // console.log(`${processName} with ID ${pid} and ${size}MB cannot be run due to Insufficient Memory`);
-//             return null;
-//         }
-        
-        
-//         const process = new process(pid, processName, size);
-//         this.processes.push(process);
-//         // console.log(` Process "${processName}" created with PID ${pid} & size ${size} MB`);
-//         return process;
-//    }
-//    listProcesses(){
-//     return this.processes.map(function(p) {
-//         return {
-//             PID: p.pid,
-//             Name: p.name,
-//             Size: p.size,
-//             State: p.state 
-//         };
-//     });
-//    }
-// }
