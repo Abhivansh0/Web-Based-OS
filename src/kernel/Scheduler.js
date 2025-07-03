@@ -1,7 +1,7 @@
 class Scheduler{
 
 /**
- * @param {import('./ProcessManager').default} processManager
+ * @param {import('./ProcessManager.js').default} processManager
  */
 
     constructor(processManager){
@@ -14,25 +14,26 @@ class Scheduler{
 
     startScheduler(time = 2000){
         setInterval(() => {
-            const list = this.pm.listProcesses();
-            if (!list.length) {
+            const readyQueue = this.pm.getReadyQueue();
+            if (!readyQueue.length) {
                 return null
             }
             this.usedCPU = 5
 
-            list.forEach(p => {
-                
+            const allProcessesDecayList = this.pm.getReadyQueue().concat(this.pm.getWaitingQueue())
+
+            allProcessesDecayList.forEach(p => {
                 if (p.state !== "running") {
                     p.cpuUsage = Math.max(p.cpuUsage - 10, 0)   
                 }
                 this.usedCPU += p.cpuUsage
-                p.state = "ready"
             });
 
             this.availableCPU = this.totalCPU - this.usedCPU
 
-            const currentIndex = this.current % list.length
-            const runningProcess = list[currentIndex]
+            this.pm.contextSwitch()
+            const runningProcess = this.pm.getRunningProcess()
+            if (!runningProcess) {return; }
             runningProcess.state = "running"
 
             const maxUsable = Math.min(50, this.availableCPU)
