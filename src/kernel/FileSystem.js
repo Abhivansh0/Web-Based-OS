@@ -1,16 +1,27 @@
 class FileSystem {
-  constructor() {
+    /**
+     * @param {import('./StorageSystem.js').default} StorageSystem 
+     */
+
+  constructor(StorageSystem) {
+    this.ss = StorageSystem
     this.rootDirectory = {}; 
   }
-  
+
   createFile(filePath, content = "") {
       const pathArray = filePath.split("/").filter(str => str !== "");
       const fileName = pathArray.pop();
       const directory = this.traversePath(pathArray);
-      if (directory) {
+      if (directory && !directory[fileName]) {
+        const success = this.ss.allocateStorage(filePath, 1)
+        if (!success) {
+            return false;
+        }
       directory[fileName] = { type: "File", content };
+      return true
     }
 }
+
 readFile(filePath) {
     const pathArray = filePath.split("/").filter(str => str !== "");
     const fileName = pathArray.pop();
@@ -23,8 +34,30 @@ deleteFile(filePath) {
     const fileName = pathArray.pop();
     const directory = this.traversePath(pathArray);
     if (directory && directory[fileName]) {
+        this.ss.deAllocateStorage(filePath)
         delete directory[fileName];
     }
+}
+
+writeFile(filePath, content){
+    const pathArray = filePath.split("/").filter(str => str !== "")
+    const fileName = pathArray.pop();
+    const directory = this.traversePath(pathArray)
+
+    if (directory && directory[fileName]) {
+        const sizeKB = Math.ceil(content.length / 1024)
+
+        this.ss.deAllocateStorage(filePath)
+
+        const success = this.ss.allocateStorage(filePath, sizeKB)
+        if (!success) {
+            return false
+        }
+        
+        directory[fileName].content = content
+        return true
+    }
+    return false
 }
 
 renameFile(oldPath, newName) {
@@ -61,5 +94,4 @@ listDirectory(path = "/") {
     }));
 }
 }
-
 export default FileSystem;

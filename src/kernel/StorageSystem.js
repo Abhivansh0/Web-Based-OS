@@ -18,16 +18,14 @@ class StorageSystem {
         if (freeBlocks.length < blocksNeeded) {
             return false
         }
-
+        
         const allocatedBlocks = freeBlocks.slice(0, blocksNeeded)
         allocatedBlocks.forEach(index => this.disk[index] = path)
 
         this.fileTable[path] = {
             size: sizeKB,
             blocks: allocatedBlocks,
-            content: ""
         }
-
         return true
     }
 

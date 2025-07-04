@@ -1,8 +1,10 @@
 class processManager {
     /**
  * @param {import('./MemoryManager.js').default} MemoryManager
+ * @param {import('./Scheduler.js').default} Scheduler
  */
-    constructor(MemoryManager) {
+    constructor(MemoryManager, Scheduler) {
+        this.Scheduler = Scheduler
         this.MemoryManager = MemoryManager;
         this.pidCounter = 0;
         this.processes = []
@@ -12,6 +14,9 @@ class processManager {
     }
     createProcess(ProcessName, size) {
         const pid = this.pidCounter++;
+        if (this.Scheduler.getAvailableCPU() < 10) {
+            return null;
+        }
         const success = this.MemoryManager.allocate(pid, size)
         if (!success) {
             return null;
