@@ -9,14 +9,14 @@ class StorageSystem {
 
     allocateStorage(path, sizeKB) {
         if (this.fileTable[path]) {
-            return false
+            return {success: false, error: "ALREADY_EXIST"}
         }
 
         const blocksNeeded = Math.ceil(sizeKB / this.blockSizeKB)
         const freeBlocks = this.getFreeBlocksIndex()
 
         if (freeBlocks.length < blocksNeeded) {
-            return false
+            return {success: false, error: "OUT_OF_STORAGE"}
         }
         
         const allocatedBlocks = freeBlocks.slice(0, blocksNeeded)
@@ -26,19 +26,19 @@ class StorageSystem {
             size: sizeKB,
             blocks: allocatedBlocks,
         }
-        return true
+        return {success: true}
     }
 
     deAllocateStorage(path) {
         if (!this.fileTable[path]) {
-            return false
+            return {success: false, error: "FILE_NOT_FOUND"}
         }
 
         const deAllocatingBlocks = this.fileTable[path].blocks
         deAllocatingBlocks.forEach(index => this.disk[index] = null)
         delete this.fileTable[path]
 
-        return true
+        return {success: true}
     }
 
     getFreeBlocksIndex() {

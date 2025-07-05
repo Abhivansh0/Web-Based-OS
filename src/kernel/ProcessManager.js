@@ -15,11 +15,11 @@ class processManager {
     createProcess(ProcessName, size) {
         const pid = this.pidCounter++;
         if (this.Scheduler.getAvailableCPU() < 10) {
-            return null;
+            return {success: false, error: "CPU_OVERLOAD" };
         }
-        const success = this.MemoryManager.allocate(pid, size)
+        const {success, error} = this.MemoryManager.allocate(pid, size)
         if (!success) {
-            return null;
+            return {success: false, error}
         }
         const process = {
             pid: pid,
@@ -30,7 +30,7 @@ class processManager {
         }
         this.processes.push(process)
         this.readyQueue.push(process);
-        return process;
+        return {success: true, process};
     }
 
     contextSwitch() {
@@ -58,16 +58,36 @@ class processManager {
     }
 
     terminateProcess(pid) {
-        this.MemoryManager.freeMemory(pid)
+        const {success, error} = this.MemoryManager.freeMemory(pid)
+        if(!success){
+            return {success: false, error}
+        }
         if (this.running && this.running.pid === pid) {
             this.Scheduler.releaseCpu(this.running.cpuUsage)
             this.running.cpuUsage = 0
             this.running = null
-            return
+            return {success: true}
         }
-        this.readyQueue = this.readyQueue.filter(p => p.pid !== pid)
-        this.waitingQueue = this.waitingQueue.filter(p => p.pid !== pid)
+
+        this.readyQueue = this.readyQueue.filter(p=>{
+            if (p.pid === pid) {
+                this.Scheduler.releaseCpu(p.cpuUsage)
+                return false
+            }
+            return true
+        })
+
+        this.waitingQueue = this.waitingQueue.filter(p=> {
+            if (p.pid === pid) {
+                this.Scheduler.releaseCpu(p.cpuUsage)
+                return false    
+            }
+            return true
+        })
+
         this.processes = this.processes.filter(p => p.pid !== pid)
+        return {success: true}
+        
     }
 
     listProcesses() {
