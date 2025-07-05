@@ -49,6 +49,14 @@ class Scheduler{
         }, time);
     }
 
+    releaseCpu(amount){
+        this.usedCPU -= amount
+        if (this.usedCPU < 5) {
+            this.usedCPU = 5 
+        }
+        this.availableCPU = this.totalCPU - this.usedCPU
+    }
+
     getAvailableCPU(){
         return this.availableCPU
     }

@@ -11,10 +11,9 @@ class MemoryManager {
     allocate(pid, size) {
         for(let i = 0; i< this.blocks.length; i++){
             if (this.blocks[i].pid === pid) {
-                return null
+                return {success: false, error: "ALREADY_EXIST"}
             }
         }
-
         for (let i = 0; i < this.blocks.length; i++) {
             const block = this.blocks[i]
             if (block.pid === null && block.size >= size) {
@@ -30,11 +29,10 @@ class MemoryManager {
                 }
                 this.available = this.available - size
                 this.used = this.used + size
-                return true;
-
+                return {success: true};
             }
         }
-        return false
+        return {success: false, error: "OUT_OF_MEMORY"}
     }
     freeMemory(pid) {
         for (let i = 0; i < this.blocks.length; i++) {
@@ -44,9 +42,10 @@ class MemoryManager {
                 this.available = this.available + block.size
                 this.used = this.used - block.size
                 this.mergeFreeSpace()
-                return;
+                return {success: true};
             }
         }
+        return {success: false, error: "ID_NOT_FOUND"}
     }
 
     mergeFreeSpace() {

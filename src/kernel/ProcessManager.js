@@ -1,8 +1,10 @@
 class processManager {
     /**
  * @param {import('./MemoryManager.js').default} MemoryManager
+ * @param {import('./Scheduler.js').default} Scheduler
  */
-    constructor(MemoryManager) {
+    constructor(MemoryManager, Scheduler) {
+        this.Scheduler = Scheduler
         this.MemoryManager = MemoryManager;
         this.pidCounter = 0;
         this.processes = []
@@ -12,9 +14,12 @@ class processManager {
     }
     createProcess(ProcessName, size) {
         const pid = this.pidCounter++;
-        const success = this.MemoryManager.allocate(pid, size)
+        if (this.Scheduler.getAvailableCPU() < 10) {
+            return {success: false, error: "CPU_OVERLOAD" };
+        }
+        const {success, error} = this.MemoryManager.allocate(pid, size)
         if (!success) {
-            return null;
+            return {success: false, error}
         }
         const process = {
             pid: pid,
@@ -25,7 +30,7 @@ class processManager {
         }
         this.processes.push(process)
         this.readyQueue.push(process);
-        return process;
+        return {success: true, process};
     }
 
     contextSwitch() {
@@ -53,14 +58,36 @@ class processManager {
     }
 
     terminateProcess(pid) {
-        this.MemoryManager.freeMemory(pid)
-        if (this.running && this.running.pid === pid) {
-            this.running = null
-            return
+        const {success, error} = this.MemoryManager.freeMemory(pid)
+        if(!success){
+            return {success: false, error}
         }
-        this.readyQueue = this.readyQueue.filter(p => p.pid !== pid)
-        this.waitingQueue = this.waitingQueue.filter(p => p.pid !== pid)
+        if (this.running && this.running.pid === pid) {
+            this.Scheduler.releaseCpu(this.running.cpuUsage)
+            this.running.cpuUsage = 0
+            this.running = null
+            return {success: true}
+        }
+
+        this.readyQueue = this.readyQueue.filter(p=>{
+            if (p.pid === pid) {
+                this.Scheduler.releaseCpu(p.cpuUsage)
+                return false
+            }
+            return true
+        })
+
+        this.waitingQueue = this.waitingQueue.filter(p=> {
+            if (p.pid === pid) {
+                this.Scheduler.releaseCpu(p.cpuUsage)
+                return false    
+            }
+            return true
+        })
+
         this.processes = this.processes.filter(p => p.pid !== pid)
+        return {success: true}
+        
     }
 
     listProcesses() {
