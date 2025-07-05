@@ -60,6 +60,8 @@ class processManager {
     terminateProcess(pid) {
         this.MemoryManager.freeMemory(pid)
         if (this.running && this.running.pid === pid) {
+            this.Scheduler.releaseCpu(this.running.cpuUsage)
+            this.running.cpuUsage = 0
             this.running = null
             return
         }
