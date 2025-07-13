@@ -1,0 +1,10 @@
+.container{
+    width: 35%;
+    height: 70%;
+    /* border: 2px solid white; */
+    position: fixed;
+    bottom: 65px;
+    left: 0.5vw;
+    border-radius: 1vw;
+    background-color: cadetblue;
+}
