@@ -29,6 +29,22 @@ class StorageSystem {
         return {success: true}
     }
 
+    renamePath(oldPath, newPath){
+        if (this.fileTable[!oldPath]) {
+            return {success: false, error: "FILE_NOT_FOUND"}
+        }
+        if (this.fileTable[newPath]) {
+            return {success: false, error: "ALREADY_EXIST"}
+        }
+        this.fileTable[newPath] = this.fileTable[oldPath]
+        this.fileTable[newPath].blocks.forEach(index=>{
+            this.disk[index] = newPath
+        })
+
+        delete this.fileTable[oldPath]
+        return {success: true}
+    }
+
     deAllocateStorage(path) {
         if (!this.fileTable[path]) {
             return {success: false, error: "FILE_NOT_FOUND"}
@@ -44,7 +60,6 @@ class StorageSystem {
     getFreeBlocksIndex() {
         return this.disk.map((b, i) => b === null ? i : null).filter(i => i !== null)
     }
-
 
     getUsedStorage() {
         return this.disk.filter(block => block !== null).length * this.blockSizeKB

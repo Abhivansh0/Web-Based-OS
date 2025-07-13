@@ -22,14 +22,43 @@ class FileSystem {
         const fileName = pathArray.pop();
         const directory = this.traversePath(pathArray);
         if (directory && !directory[fileName]) {
-            const {success, error} = this.ss.allocateStorage(filePath, 1)
+            const { success, error } = this.ss.allocateStorage(filePath, 1)
             if (!success) {
-                return {success: false, error};
+                return { success: false, error };
             }
             directory[fileName] = { type: "File", content };
-            return {success: true}
+            return { success: true }
         }
-        return {success: false, error: "ALREADY_EXIST"}
+        return { success: false, error: "ALREADY_EXIST" }
+    }
+
+    moveFile(oldPath, newPath) {
+        const pathArray = oldPath.split("/").filter(str => str !== "")
+        const fileName = pathArray.pop()
+        const directory = this.traversePath(pathArray)
+
+        if (!directory[fileName] || directory[fileName].type !== "File") {
+            return { success: false, error: "FILE_NOT_FOUND" }
+        }
+
+        const content = directory[fileName].content
+
+        const newArrayPath = newPath.split("/").filter(str => str !== "")
+        const newDirectoy = this.traversePath(newArrayPath)
+
+        if (!newDirectoy || newDirectoy[fileName]) {
+            return { success: false, error: "ALREADY_EXIST" }
+        }
+
+        const { success, error } = this.ss.renamePath(oldPath, newPath)
+        if (!success) {
+            return { success: false, error }
+        }
+
+        newDirectoy[fileName] = { type: "File", content: content }
+        delete directory[fileName]
+
+        return { success: true }
     }
 
     createFolder(filePath) {
@@ -38,19 +67,19 @@ class FileSystem {
         const directory = this.traversePath(pathArray)
         if (directory && !directory[folderName]) {
             directory[folderName] = { type: "Folder", children: {} }
-            return {success:true}
+            return { success: true }
         }
 
-        return {success: false, error: "ALREADY_EXIST"}
+        return { success: false, error: "ALREADY_EXIST" }
     }
 
     deleteFolder(filePath) {
         const pathArray = filePath.split("/").filter(str => str !== "");
         const folderName = pathArray.pop();
         const directory = this.traversePath(pathArray);
-        if (directory && directory[folderName] && directory[folderName].type === "Folder" ) {
+        if (directory && directory[folderName] && directory[folderName].type === "Folder") {
             const children = directory[folderName].children
-            
+
             const fileNames = Object.keys(children)
 
             fileNames.forEach(child => {
@@ -59,15 +88,15 @@ class FileSystem {
                     const fullPath = `${filePath}/${child}`
                     this.ss.deAllocateStorage(fullPath)
                 }
-                else if(item.type === "Folder"){
+                else if (item.type === "Folder") {
                     const folderPath = `${filePath}/${child}`
                     this.deleteFolder(folderPath)
                 }
             })
             delete directory[folderName];
-            return {success: true}
+            return { success: true }
         }
-        return {success: false, error: "FILE_DONT_EXIST"}
+        return { success: false, error: "FILE_DONT_EXIST" }
     }
 
     readFile(filePath) {
@@ -84,9 +113,9 @@ class FileSystem {
         if (directory && directory[fileName]) {
             this.ss.deAllocateStorage(filePath)
             delete directory[fileName];
-            return {success:true}
+            return { success: true }
         }
-        return {success: false, error: "FILE_DONT_EXIST"}
+        return { success: false, error: "FILE_DONT_EXIST" }
     }
 
     writeFile(filePath, content) {
@@ -94,20 +123,20 @@ class FileSystem {
         const fileName = pathArray.pop();
         const directory = this.traversePath(pathArray)
 
-        if (directory && directory[fileName] && directory[fileName].type === "File" ) {
+        if (directory && directory[fileName] && directory[fileName].type === "File") {
             const sizeKB = Math.ceil(content.length / 1024)
 
             this.ss.deAllocateStorage(filePath)
 
-            const {success, error} = this.ss.allocateStorage(filePath, sizeKB)
+            const { success, error } = this.ss.allocateStorage(filePath, sizeKB)
             if (!success) {
-                return {success: false, error}
+                return { success: false, error }
             }
 
             directory[fileName].content = content
-            return {success: true}
+            return { success: true }
         }
-        return {success: false, error: "FILE_DONT_EXIST"}
+        return { success: false, error: "FILE_DONT_EXIST" }
     }
 
     renameFile(oldPath, newName) {
