@@ -1,0 +1,48 @@
+.taskbar{
+    /* padding: 0 1vw 0 1vw; */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /* border-top: 1px solid white; */
+    height: 46px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #292929;
+}
+.taskbar_component{
+    padding: 0 0.5vw;
+    /* border: 1px solid white; */
+}
+.taskbar_centre{
+    /* position: absolute; */
+    /* border: 1px solid white; */
+    width: 40%;
+    display: flex;
+    /* justify-content: center; */
+    position: absolute;
+    gap: 1vw;
+    height: 100%;
+    left: 0;
+    display: flex;
+}
+.taskbar_time{
+    position: absolute;
+    height: 100%;
+    right: 0;
+    width: 15%;
+}
+
+.icons_dock{
+    display: flex;
+    gap: 10px;
+    /* border: 2px solid white; */
+    width: fit-content;
+}
+.start_btn{
+    width: 7%;
+    background-color: crimson;
+    border: 1px solid white;
+}
+.start_btn:hover{
+    cursor: pointer;
+}

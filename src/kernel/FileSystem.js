@@ -1,10 +1,10 @@
 class FileSystem {
     /**
-     * @param {import('./StorageSystem.js').default} storageSystem 
+     * @param {import('./StorageSystem.js').default} StorageSystem 
      */
 
-    constructor(storageSystem) {
-        this.ss = storageSystem;
+    constructor(StorageSystem) {
+        this.ss = StorageSystem
         this.rootDirectory = {
             apps: {
                 type: "Folder",
@@ -17,144 +17,155 @@ class FileSystem {
         };
     }
 
-    getItemCaseInsensitive(directory, itemName) {
-        const lowerName = itemName.toLowerCase();
-        return Object.entries(directory).find(([key, _]) => key.toLowerCase() === lowerName);
-    }
-
     createFile(filePath, content = "") {
         const pathArray = filePath.split("/").filter(str => str !== "");
         const fileName = pathArray.pop();
-        const directory = this.traversePathCaseInsensitive(pathArray);
-        const existing = this.getItemCaseInsensitive(directory, fileName);
-        if (directory && !existing) {
-            const { success, error } = this.ss.allocateStorage(filePath, 1);
+        const directory = this.traversePath(pathArray);
+        if (directory && !directory[fileName]) {
+            const { success, error } = this.ss.allocateStorage(filePath, 1)
             if (!success) {
                 return { success: false, error };
             }
             directory[fileName] = { type: "File", content };
-            return { success: true };
+            return { success: true }
         }
-        return { success: false, error: "ALREADY_EXIST" };
+        return { success: false, error: "ALREADY_EXIST" }
+    }
+
+    moveFile(oldPath, newPath) {
+        const pathArray = oldPath.split("/").filter(str => str !== "")
+        const fileName = pathArray.pop()
+        const directory = this.traversePath(pathArray)
+
+        if (!directory[fileName] || directory[fileName].type !== "File") {
+            return { success: false, error: "FILE_NOT_FOUND" }
+        }
+
+        const content = directory[fileName].content
+
+        const newArrayPath = newPath.split("/").filter(str => str !== "")
+        const newDirectoy = this.traversePath(newArrayPath)
+
+        if (!newDirectoy || newDirectoy[fileName]) {
+            return { success: false, error: "ALREADY_EXIST" }
+        }
+
+        const { success, error } = this.ss.renamePath(oldPath, newPath)
+        if (!success) {
+            return { success: false, error }
+        }
+
+        newDirectoy[fileName] = { type: "File", content: content }
+        delete directory[fileName]
+
+        return { success: true }
     }
 
     createFolder(filePath) {
         const pathArray = filePath.split("/").filter(str => str !== "");
-        const folderName = pathArray.pop();
-        const directory = this.traversePathCaseInsensitive(pathArray);
-        const existing = this.getItemCaseInsensitive(directory, folderName);
-        if (directory && !existing) {
-            directory[folderName] = { type: "Folder", children: {} };
-            return { success: true };
+        const folderName = pathArray.pop()
+        const directory = this.traversePath(pathArray)
+        if (directory && !directory[folderName]) {
+            directory[folderName] = { type: "Folder", children: {} }
+            return { success: true }
         }
 
-        return { success: false, error: "ALREADY_EXIST" };
+        return { success: false, error: "ALREADY_EXIST" }
     }
 
     deleteFolder(filePath) {
         const pathArray = filePath.split("/").filter(str => str !== "");
         const folderName = pathArray.pop();
-        const directory = this.traversePathCaseInsensitive(pathArray);
-        const entry = this.getItemCaseInsensitive(directory, folderName);
-        if (entry && entry[1].type === "Folder") {
-            const children = entry[1].children;
-            const fileNames = Object.keys(children);
+        const directory = this.traversePath(pathArray);
+        if (directory && directory[folderName] && directory[folderName].type === "Folder") {
+            const children = directory[folderName].children
+
+            const fileNames = Object.keys(children)
 
             fileNames.forEach(child => {
-                const item = children[child];
-                const fullPath = `${filePath}/${child}`;
+                const item = children[child]
                 if (item.type === "File") {
-                    this.ss.deAllocateStorage(fullPath);
-                } else if (item.type === "Folder") {
-                    this.deleteFolder(fullPath);
+                    const fullPath = `${filePath}/${child}`
+                    this.ss.deAllocateStorage(fullPath)
                 }
-            });
-
-            const [actualFolderName] = entry;
-            delete directory[actualFolderName];
-            return { success: true };
+                else if (item.type === "Folder") {
+                    const folderPath = `${filePath}/${child}`
+                    this.deleteFolder(folderPath)
+                }
+            })
+            delete directory[folderName];
+            return { success: true }
         }
-        return { success: false, error: "FILE_DONT_EXIST" };
+        return { success: false, error: "FILE_DONT_EXIST" }
     }
 
     readFile(filePath) {
         const pathArray = filePath.split("/").filter(str => str !== "");
         const fileName = pathArray.pop();
-        const directory = this.traversePathCaseInsensitive(pathArray);
-        const entry = this.getItemCaseInsensitive(directory, fileName);
-        return entry?.[1]?.type === "File" ? entry[1].content : null;
+        const directory = this.traversePath(pathArray);
+        return directory?.[fileName]?.content || null;
     }
 
     deleteFile(filePath) {
         const pathArray = filePath.split("/").filter(str => str !== "");
         const fileName = pathArray.pop();
-        const directory = this.traversePathCaseInsensitive(pathArray);
-        const entry = this.getItemCaseInsensitive(directory, fileName);
-        if (entry && entry[1].type === "File") {
-            this.ss.deAllocateStorage(filePath);
-            const [actualFileName] = entry;
-            delete directory[actualFileName];
-            return { success: true };
+        const directory = this.traversePath(pathArray);
+        if (directory && directory[fileName]) {
+            this.ss.deAllocateStorage(filePath)
+            delete directory[fileName];
+            return { success: true }
         }
-        return { success: false, error: "FILE_DONT_EXIST" };
+        return { success: false, error: "FILE_DONT_EXIST" }
     }
 
     writeFile(filePath, content) {
-        const pathArray = filePath.split("/").filter(str => str !== "");
+        const pathArray = filePath.split("/").filter(str => str !== "")
         const fileName = pathArray.pop();
-        const directory = this.traversePathCaseInsensitive(pathArray);
-        const entry = this.getItemCaseInsensitive(directory, fileName);
+        const directory = this.traversePath(pathArray)
 
-        if (entry && entry[1].type === "File") {
-            const sizeKB = Math.ceil(content.length / 1024);
-            this.ss.deAllocateStorage(filePath);
-            const { success, error } = this.ss.allocateStorage(filePath, sizeKB);
+        if (directory && directory[fileName] && directory[fileName].type === "File") {
+            const sizeKB = Math.ceil(content.length / 1024)
+
+            this.ss.deAllocateStorage(filePath)
+
+            const { success, error } = this.ss.allocateStorage(filePath, sizeKB)
             if (!success) {
-                return { success: false, error };
+                return { success: false, error }
             }
-            entry[1].content = content;
-            return { success: true };
+
+            directory[fileName].content = content
+            return { success: true }
         }
-        return { success: false, error: "FILE_DONT_EXIST" };
+        return { success: false, error: "FILE_DONT_EXIST" }
     }
 
     renameFile(oldPath, newName) {
         const pathArray = oldPath.split("/").filter(str => str !== "");
         const oldName = pathArray.pop();
-        const directory = this.traversePathCaseInsensitive(pathArray);
-        const oldEntry = this.getItemCaseInsensitive(directory, oldName);
-        const newEntry = this.getItemCaseInsensitive(directory, newName);
-        if (!oldEntry) return { success: false, error: "FILE_NOT_FOUND" };
-        if (newEntry) return { success: false, error: "NEW_NAME_EXISTS" };
-
-        const [actualOldName, value] = oldEntry;
-
-       
-        const oldFullPath = [...pathArray, actualOldName].join("/");
-        const newFullPath = [...pathArray, newName].join("/");
-        this.ss.deAllocateStorage(oldFullPath);
-        const { success, error } = this.ss.allocateStorage(newFullPath, 1);
-        if (!success) return { success: false, error };
-
-        
-        directory[newName] = value;
-        delete directory[actualOldName];
-        return { success: true };
+        const directory = this.traversePath(pathArray);
+        if (directory && directory[oldName]) {
+            directory[newName] = directory[oldName];
+            delete directory[oldName];
+        }
     }
-
-    traversePathCaseInsensitive(pathArray) {
+    traversePath(pathArray) {
         let current = this.rootDirectory;
-        for (const segment of pathArray) {
-            const entry = this.getItemCaseInsensitive(current, segment);
-            if (!entry || entry[1].type !== "Folder") return null;
-            current = entry[1].children;
+        for (let i = 0; i < pathArray.length - 1; i++) {
+            const folder = pathArray[i];
+            if (!current[folder]) {
+                return null;
+            }
+            if (current[folder].type === "Folder" && current[folder].children) {
+                current = current[folder].children;
+            } else {
+                return null
+            }
         }
         return current;
     }
-
     listDirectory(path = "/") {
         const pathArray = path.split("/").filter(str => str !== "");
-        const directory = this.traversePathCaseInsensitive(pathArray) || this.rootDirectory;
+        const directory = this.traversePath(pathArray) || this.rootDirectory;
 
         return Object.entries(directory).map(([name, item]) => ({
             name,
@@ -162,5 +173,4 @@ class FileSystem {
         }));
     }
 }
-
 export default FileSystem;
