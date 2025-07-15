@@ -139,14 +139,23 @@ class FileSystem {
         return { success: false, error: "FILE_DONT_EXIST" }
     }
 
-    renameFile(oldPath, newName) {
+  renameFile(oldPath, newName) {
         const pathArray = oldPath.split("/").filter(str => str !== "");
         const oldName = pathArray.pop();
         const directory = this.traversePath(pathArray);
-        if (directory && directory[oldName]) {
-            directory[newName] = directory[oldName];
-            delete directory[oldName];
-        }
+        if (!directory?.[oldName]) return { success: false, error: "FILE_NOT_FOUND" };
+        if (directory[newName]) return { success: false, error: "NEW_NAME_EXISTS" };
+
+        const value = directory[oldName];
+        const oldFullPath = [...pathArray, oldName].join("/");
+        const newFullPath = [...pathArray, newName].join("/");
+        this.ss.deAllocateStorage(oldFullPath);
+        const { success, error } = this.ss.allocateStorage(newFullPath, 1);
+        if (!success) return { success: false, error };
+
+        directory[newName] = value;
+        delete directory[oldName];
+        return { success: true };
     }
     traversePath(pathArray) {
         let current = this.rootDirectory;
