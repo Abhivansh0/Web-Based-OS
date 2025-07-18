@@ -1,9 +1,10 @@
 .taskbar{
     /* padding: 0 1vw 0 1vw; */
     position: fixed;
+    z-index: 100;
     bottom: 0;
     width: 100%;
-    /* border-top: 1px solid white; */
+    border-top: 1px solid gray;
     height: 46px;
     display: flex;
     justify-content: space-between;
@@ -41,7 +42,7 @@
 .start_btn{
     width: 7%;
     background-color: crimson;
-    border: 1px solid white;
+    /* border: 1px solid white; */
 }
 .start_btn:hover{
     cursor: pointer;

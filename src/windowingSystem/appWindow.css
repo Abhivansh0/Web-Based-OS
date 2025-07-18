@@ -1,0 +1,53 @@
+.app_window{
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height:100%;
+    /* border: 1px solid gray; */
+    background-color: crimson;
+    border-radius: 10px;
+    border: 1px solid grey;
+    box-shadow: 0px 0px 20px 10px black;
+    transition: all 0.3 ease;
+    will-change: transform, width, height, border-radius, border;
+;
+}
+.status_bar{
+    /* cursor: move; */
+    /* padding: 2vw; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    background-color: black;
+}
+.app_name{
+    cursor:default;
+    color: white;
+    font-weight: 100;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.window_btns{
+    height: 30px;
+    position: absolute;
+    right: 0;
+    /* border: 2px solid white; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* gap: 1vw; */
+}
+.window_btns button{
+    background-color: black;
+    border: none;
+    height: 100%;
+    width: 2.5vw;
+}
+.window_btns button svg{
+    color: white;
+    width: 100%;
+    height: 50%;
+
+}
+

@@ -6,30 +6,13 @@ import Taskbar from '../taskbar/Taskbar'
 import StartMenu from '../startMenu/StartMenu'
 
 const Desktop = () => {
-  const [IsStart, setIsStart] = useState(false)
-
-  const handleStartView = ()=>{
-    setIsStart(!IsStart)
-  }
   return (
     <>
       <div className="main_desktop">
         
         <div className="icon_grid">
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
-          <AppIcon iconName={"Terminal"} iconImage={terminal} />
+          <AppIcon iconName={"Terminal"} iconImage={terminal} size={400} />
         </div>
-        {IsStart && <StartMenu/>}
-        <Taskbar isStart = {handleStartView} />
       </div>
     </>
   )

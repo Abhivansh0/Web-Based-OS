@@ -3,6 +3,7 @@
     height: 70%;
     /* border: 2px solid white; */
     position: fixed;
+    z-index: 100;
     bottom: 65px;
     left: 0.5vw;
     border-radius: 1vw;
