@@ -13,7 +13,7 @@ class Scheduler{
     }
 
     startScheduler(time = 2000){
-        setInterval(() => {
+        setInterval(() => {            
             const readyQueue = this.pm.getReadyQueue();
             if (!readyQueue.length) {
                 return null

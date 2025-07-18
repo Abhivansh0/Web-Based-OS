@@ -1,14 +1,24 @@
 import '../appIcon/appIcon.css'
+import { useKernel } from '../../context/kernelContext'
 
 
-const AppIcon = (props) => {
+const AppIcon = ({iconName, iconImage, size}) => {
+  const {createApp, terminateApp, memoryManager, processManager, scheduler, storageSystem, fileSystem } = useKernel()
+
+  const handleClick = ()=>{
+    const process = createApp(iconName, size)
+
+    console.log(process)
+
+  }
+
   return (
     <>
-    <div className="icon">
+    <div onDoubleClick={()=>handleClick()}  className="icon">
       <div className="iconImage">
-        <img src={props.iconImage} alt="" />
+        <img src={iconImage} alt="" />
       </div>
-      <div className="iconName">{props.iconName}</div>
+      <div className="iconName">{iconName}</div>
 
     </div>
     
