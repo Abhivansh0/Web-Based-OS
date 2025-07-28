@@ -114,6 +114,36 @@ class FileSystem {
         return { success: false, error: "FILE_DONT_EXIST" };
     }
 
+    moveToFile(oldPath, newPath) {
+        const pathArray = oldPath.split("/").filter(str => str !== "")
+        const fileName = pathArray.pop()
+        const directory = this.traversePathCaseInsensitive(pathArray)
+
+        if (!directory[fileName] || directory[fileName].type !== "File") {
+            return { success: false, error: "FILE_NOT_FOUND" }
+        }
+
+        const content = directory[fileName].content
+
+        const newArrayPath = newPath.split("/").filter(str => str !== "")
+        const newDirectoy = this.traversePathCaseInsensitive(newArrayPath)
+
+        if (!newDirectoy || newDirectoy[fileName]) {
+            return { success: false, error: "ALREADY_EXIST" }
+        }
+
+        const { success, error } = this.ss.renamePath(oldPath, newPath)
+        if (!success) {
+            return { success: false, error }
+        }
+
+        newDirectoy[fileName] = { type: "File", content: content }
+        delete directory[fileName]
+
+        return { success: true }
+
+    }
+
     writeFile(filePath, content) {
         const pathArray = filePath.split("/").filter(str => str !== "");
         const fileName = pathArray.pop();
@@ -154,6 +184,7 @@ class FileSystem {
         delete directory[actualOldName];
         return { success: true };
     }
+
     renameFolder(oldPath, newName) {
         const pathArray = oldPath.split("/").filter(str => str !== "");
         const oldName = pathArray.pop();
