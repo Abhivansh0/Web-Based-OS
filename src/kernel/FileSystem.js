@@ -27,15 +27,30 @@ class FileSystem {
         return null;
     }
 
-    uniqueName(directory, baseName, extension = "") {
-        let counter = 1;
-        let newName = `${baseName}[${counter}]${extension}`;
-        while (this.getItemCaseInsensitive(directory, newName)) {
+    uniqueName(baseName, extension = "") {
+        const nameExists = (dir) => {
+            for (const key in dir) {
+                if (key.toLowerCase() === `${newName}`.toLowerCase()) {
+                    return true;
+                }
+                const item = dir[key];
+                if (item.type === "Folder") {
+                    if (nameExists(item.children)) return true;
+                }
+            }
+            return false;
+        };
+
+        let counter = 0;
+        let newName = `${baseName}${extension}`;
+        while (nameExists(this.rootDirectory)) {
             counter++;
             newName = `${baseName}[${counter}]${extension}`;
         }
+
         return newName;
     }
+
 
     createFile(filePath, content = "") {
         const pathArray = filePath.split("/").filter(str => str !== "");
@@ -112,8 +127,8 @@ class FileSystem {
             return { success: true };
         }
         return { success: false, error: "FILE_DONT_EXIST" };
-    }
 
+    }
     moveToFile(oldPath, newPath) {
         const pathArray = oldPath.split("/").filter(str => str !== "")
         const fileName = pathArray.pop()
@@ -143,6 +158,44 @@ class FileSystem {
         return { success: true }
 
     }
+
+    moveFolder(oldPath, newPath) {
+        const oldPathArray = oldPath.split("/").filter(str => str !== "");
+        const folderName = oldPathArray.pop();
+        const sourceDir = this.traversePathCaseInsensitive(oldPathArray);
+
+        const folderToMove = sourceDir?.[folderName];
+        if (!sourceDir || !folderToMove || folderToMove.type !== "Folder") {
+            return { success: false, error: "FOLDER_NOT_FOUND" };
+        }
+
+        const newPathArray = newPath.split("/").filter(str => str !== "");
+        const destDir = this.traversePathCaseInsensitive(newPathArray);
+
+        if (!destDir) {
+            return { success: false, error: "DESTINATION_NOT_FOUND" };
+        }
+
+        destDir[folderName] = { type: "Folder", children: {} };
+
+        const moveChildren = (src, dest) => {
+            for (const key in src) {
+                const item = src[key];
+                if (item.type === "File") {
+                    dest[key] = { ...item };
+                } else if (item.type === "Folder") {
+                    dest[key] = { type: "Folder", children: {} };
+                    moveChildren(item.children, dest[key].children);
+                }
+            }
+        };
+
+        moveChildren(folderToMove.children, destDir[folderName].children);
+        delete sourceDir[folderName];
+
+        return { success: true };
+    }
+
 
     writeFile(filePath, content) {
         const pathArray = filePath.split("/").filter(str => str !== "");
@@ -184,7 +237,6 @@ class FileSystem {
         delete directory[actualOldName];
         return { success: true };
     }
-
     renameFolder(oldPath, newName) {
         const pathArray = oldPath.split("/").filter(str => str !== "");
         const oldName = pathArray.pop();
