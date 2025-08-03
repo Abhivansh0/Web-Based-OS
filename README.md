@@ -58,12 +58,12 @@ Designed to help students **visualize OS internals**, explore resource constrain
 
 ## 🧰 Tech Stack
 
-| Layer            | Tech                       |
-|------------------|----------------------------|
-| UI Layer         | React, GSAP, CSS Modules   |
-| App Interaction  | Zustand (state mgmt)       |
-| OS Kernel Logic  | Pure JavaScript (modular)  |
-| Window System    | react-rnd + GSAP           |
+| Layer            | Tech                               |
+|------------------|------------------------------------|
+| UI Layer         | React, GSAP, CSS Modules, Framer   |
+| App Interaction  | Zustand (state mgmt)               |
+| OS Kernel Logic  | Pure JavaScript (modular)          |
+| Window System    | react-rnd + GSAP                   |
 
 ---
 
