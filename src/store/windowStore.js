@@ -18,6 +18,8 @@ function zIndexManager(windows, id) {
 const useWindowStore = create((set, get) => ({
     windows: [],
 
+<<<<<<< HEAD
+=======
     bringToFront: (id) => set((state) => {
         const windows = [...state.windows];
         const index = windows.findIndex(win => win.id === id);
@@ -35,6 +37,7 @@ const useWindowStore = create((set, get) => ({
         };
     }),
 
+>>>>>>> a8012dc298818ace52f68f06c8e28c3f3955af62
     addWindow: (windowsData) => {
         const newWindow = {
             id: windowsData.pid,
@@ -70,6 +73,28 @@ const useWindowStore = create((set, get) => ({
         })
     },
 
+<<<<<<< HEAD
+    focusWindows: (id) => set((state) => {
+        const windows = [...state.windows];
+        const index = windows.findIndex(win => win.id === id);
+        if (index === -1) return { windows };
+
+        const focusedWin = windows.splice(index, 1)[0];
+        focusedWin.isFocused = true;
+        windows.forEach(win => win.isFocused = false);
+        windows.push(focusedWin);
+
+        return {
+            windows: windows.map((win, i) => ({
+                ...win,
+                zIndex: i + 1
+            }))
+        };
+    }),
+
+
+=======
+>>>>>>> a8012dc298818ace52f68f06c8e28c3f3955af62
     minimizeWindow: (id) => set((state) => {
         const index = state.windows.findIndex(win=> win.id === id)
         let nextFocusedWindow = -1
@@ -97,6 +122,18 @@ const useWindowStore = create((set, get) => ({
         return { windows: updatedWindows }
     }),
 
+<<<<<<< HEAD
+    restoreMinimize: (id) => set((state) => {
+        const maxZ = Math.max(...state.windows.map(c => c.zIndex), 0)
+        const updatedWindows = state.windows.map((win) => {
+            const shouldUpdate = win.zIndex < maxZ
+            if (win.id === id && win.isMinimized) {
+                return {
+                    ...win,
+                    isMinimized: false,
+                    isFocused: true,
+                    zIndex: shouldUpdate ? globalZIndex++ : win.zIndex
+=======
     toggleMinimize: (id) =>{
         const {restoreMinimize, minimizeWindow, windows } = get()
         const current = windows.find(win=> win.id === id)
@@ -113,6 +150,7 @@ const useWindowStore = create((set, get) => ({
                         ...win,
                         isMaximized: !win.isMaximized,
                     }
+>>>>>>> a8012dc298818ace52f68f06c8e28c3f3955af62
                 }
                 return win
             })
@@ -121,6 +159,8 @@ const useWindowStore = create((set, get) => ({
         })
     },
 
+<<<<<<< HEAD
+=======
     restoreMinimize: (id) => {
         set((state) => {
             let updatedWindows = state.windows.map((win) => {
@@ -137,6 +177,7 @@ const useWindowStore = create((set, get) => ({
         })
     },
 
+>>>>>>> a8012dc298818ace52f68f06c8e28c3f3955af62
     moveWindow: (id, newPosition) => {
         set((state) => ({
             windows: state.windows.map((win) =>
@@ -156,6 +197,29 @@ const useWindowStore = create((set, get) => ({
         }))
     },
 
+<<<<<<< HEAD
+    bringToFront: (id) => set((state) => {
+        const windows = [...state.windows];
+        const index = windows.findIndex(win => win.id === id);
+        if (index === -1) return { windows };
+
+        const targetWin = windows.splice(index, 1)[0];
+        targetWin.isFocused = true;
+        windows.forEach(win => win.isFocused = false);
+        windows.push(targetWin);
+
+        return {
+            windows: windows.map((win, i) => ({
+                ...win,
+                zIndex: i + 1
+            }))
+        };
+    }),
+
+
+
+=======
+>>>>>>> a8012dc298818ace52f68f06c8e28c3f3955af62
 }
 
 ))
