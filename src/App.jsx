@@ -22,9 +22,6 @@ const App = () => {
           <Desktop />
           {windows.map((win)=>{
             const Component = appRegistry[win.name]
-            // console.log('Rendering window:', win.name, 'Component:', Component)
-            // console.log("full windows array", windows)
-
             if (!Component) return null
             return (
               <AppWindow key={win.id} windowData={win} >

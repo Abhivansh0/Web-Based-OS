@@ -7,7 +7,7 @@ import { useRef } from 'react'
 
 
 const AppIcon = ({ iconName, iconImage, size }) => {
-  const { createApp, terminateApp, memoryManager, processManager, scheduler, storageSystem, fileSystem } = useKernel()
+  const { createApp, terminateApp, memoryManager, processManager, scheduler, storageSystem, fileSystem, getProcessStats, getSystemStats } = useKernel()
   const addWindow = useWindowStore((state) => state.addWindow);
   const bringTofront = useWindowStore((state) => state.bringToFront);
   const closeWindow = useWindowStore((state) => state.closeWindow);
@@ -30,7 +30,6 @@ const AppIcon = ({ iconName, iconImage, size }) => {
 
   const handleClick = () => {
     const { success, process, error } = createApp(iconName, size)
-    console.log(process)
     if (success) {
       addWindow({
         pid: process.pid,
@@ -39,6 +38,10 @@ const AppIcon = ({ iconName, iconImage, size }) => {
         memoryUsage: process.size,
         state: process.state
       })
+
+      console.log(getProcessStats())
+      console.log(getSystemStats())
+      
     }
     else {
       alert(error)

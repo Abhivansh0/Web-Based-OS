@@ -60,8 +60,9 @@ const AppWindow = ({ windowData, children }) => {
     }
 
     const handleMaximizeToggle = () => {
+        
         const el = windowRef.current;
-        const target = el.parentElement; // the Rnd wrapper div
+        const target = el.parentElement; 
         if (!isMaximized) {
 
             lastPosition.current = position
@@ -78,6 +79,7 @@ const AppWindow = ({ windowData, children }) => {
                     maximizeWindow(id)
                     resizeWindow(id, {width: window.innerWidth, height: window.innerHeight - 46});
                     moveWindow(id, { x: 0, y: 0 })
+                    console.log(useWindowStore.getState().windows.find(w => w.id === id))
                 },
             });
             gsap.to(el, {
@@ -96,6 +98,7 @@ const AppWindow = ({ windowData, children }) => {
                     maximizeWindow(id)
                     resizeWindow(id, lastSize.current);
                     moveWindow(id, lastPosition.current)
+                    console.log(useWindowStore.getState().windows.find(w => w.id === id))
 
                 },
             });
@@ -116,6 +119,7 @@ const AppWindow = ({ windowData, children }) => {
                     if (!isMaximized) {
                         lastPosition.current = newPos
                         moveWindow(id, newPos)
+                        console.log(useWindowStore.getState().windows.find(w => w.id === id))
                     }
                 }}
                 onResizeStop={(e, direction, ref, delta, newPos) => {
@@ -128,6 +132,7 @@ const AppWindow = ({ windowData, children }) => {
                         lastPosition.current = newPos
                         resizeWindow(id, newSize)
                         moveWindow(id, newPos)
+                        console.log(useWindowStore.getState().windows.find(w => w.id === id))
 
                     }
 

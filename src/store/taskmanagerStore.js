@@ -7,3 +7,4 @@ export const useTaskbarStore = create((set, get) => ({
     set((state) => ({
       apps: state.apps.filter((app) => app.id !== id),
     })),
+}))
