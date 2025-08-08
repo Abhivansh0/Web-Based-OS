@@ -16,6 +16,7 @@ function zIndexManager(windows, id) {
 
 
 const useWindowStore = create((set, get) => ({
+    openedApps: [],
     windows: [],
 
     bringToFront: (id) => set((state) => {
@@ -36,6 +37,10 @@ const useWindowStore = create((set, get) => ({
     }),
 
     addWindow: (windowsData) => {
+        const newApp = {
+            id: windowsData.pid,
+            name: windowsData.ProcessName
+        }
         const newWindow = {
             id: windowsData.pid,
             name: windowsData.ProcessName,
@@ -50,21 +55,24 @@ const useWindowStore = create((set, get) => ({
             isFocused: true,
 
         }
+        const alreadyOpen = get().openedApps.find(app=> app.name === windowsData.ProcessName)
+        
         set((state) => ({
-            windows: [...state.windows.map(win => ({ ...win, isFocused: false })), newWindow]
+            windows: [...state.windows.map(win => ({ ...win, isFocused: false })), newWindow],
+            openedApps: alreadyOpen ? state.openedApps: [...state.openedApps, newApp]
         }))
     },
 
     closeWindow: (pid) => {
         set((state) => {
             const filtered = state.windows.filter((win) => win.id !== pid)
-
             return {
                 windows: filtered.map((win, i)=>({
                     ...win,
                     zIndex: i + 1,
                     isFocused: i === filtered.length - 1
-                }))
+                })),
+                openedApps: state.openedApps.filter((win)=> win.id !== pid)
             }
             
         })

@@ -16,6 +16,7 @@ const AppWindow = ({ windowData, children }) => {
 
     const { id, name, cpuUsage, memoryUsage, state, size, position, zIndex, isMinimized, isMaximized, isFocused } = windowData
 
+    const windows = useWindowStore((state) => state.windows)
     const addWindow = useWindowStore((state) => state.addWindow);
     const bringTofront = useWindowStore((state) => state.bringToFront);
     const closeWindow = useWindowStore((state) => state.closeWindow);
@@ -32,7 +33,7 @@ const AppWindow = ({ windowData, children }) => {
     const crossRef = useRef()
     const windowRef = useRef()
 
-    const close = () =>{
+    const close = () => {
         closeWindow(id)
         terminateApp(id)
     }
@@ -59,10 +60,42 @@ const AppWindow = ({ windowData, children }) => {
         })
     }
 
+    useGSAP(() => {
+        const el = windowRef.current
+        const target = el.parentElement
+        lastPosition.current = position
+        lastSize.current = size
+        if (!isMinimized) {
+            gsap.to(target, {
+                y: lastPosition.current.y,
+                duration: 0.5,
+                ease: "power1.inOut"
+            },
+            )
+        }
+    }, [isMinimized])
+
+    const minimize = () => {
+        const el = windowRef.current
+        const target = el.parentElement
+        lastPosition.current = position
+        lastSize.current = size
+
+        gsap.to(target, {
+            y: "100vh",
+            duration: 0.5,
+            ease: "power1.inOut",
+            onComplete: () => {
+                toggleMinimize(id)
+            }
+        })
+
+    }
+
     const handleMaximizeToggle = () => {
-        
+
         const el = windowRef.current;
-        const target = el.parentElement; 
+        const target = el.parentElement;
         if (!isMaximized) {
 
             lastPosition.current = position
@@ -77,9 +110,10 @@ const AppWindow = ({ windowData, children }) => {
                 ease: "power2.inOut",
                 onComplete: () => {
                     maximizeWindow(id)
-                    resizeWindow(id, {width: window.innerWidth, height: window.innerHeight - 46});
+                    resizeWindow(id, { width: window.innerWidth, height: window.innerHeight - 46 });
                     moveWindow(id, { x: 0, y: 0 })
-                    console.log(useWindowStore.getState().windows.find(w => w.id === id))
+                    // console.log(useWindowStore.getState().windows.find(w => w.id === id))
+                    console.log(windows)
                 },
             });
             gsap.to(el, {
@@ -98,7 +132,8 @@ const AppWindow = ({ windowData, children }) => {
                     maximizeWindow(id)
                     resizeWindow(id, lastSize.current);
                     moveWindow(id, lastPosition.current)
-                    console.log(useWindowStore.getState().windows.find(w => w.id === id))
+                    // console.log(useWindowStore.getState().windows.find(w => w.id === id))
+                    console.log(windows)
 
                 },
             });
@@ -112,8 +147,11 @@ const AppWindow = ({ windowData, children }) => {
     return (
         <>
             <Rnd
-                onDragStart={()=> bringTofront(id)}
-                onResize={()=> bringTofront(id)}
+                onDragStart={
+                    (ref) => { bringTofront(id) }
+
+                }
+                onResize={() => bringTofront(id)}
                 onDragStop={(e, d) => {
                     const newPos = { x: d.x, y: d.y }
                     if (!isMaximized) {
@@ -144,7 +182,7 @@ const AppWindow = ({ windowData, children }) => {
                 bounds="body"
                 dragHandleClassName="status_bar"
             >
-                <div style={{zIndex: zIndex}} onClick={()=>bringTofront(id)} ref={windowRef} className="app_window">
+                <div style={{ zIndex: zIndex }} onClick={() => bringTofront(id)} ref={windowRef} className="app_window">
                     <div onDoubleClick={() => handleMaximizeToggle()} className="status_bar">
                         <div className="app_name">{name}</div>
                         <div className="window_btns">
@@ -153,6 +191,7 @@ const AppWindow = ({ windowData, children }) => {
                                 ref={minimizeRef}
                                 onMouseEnter={() => handleHover(minimizeRef)}
                                 onMouseLeave={() => mouseLeave(minimizeRef)}
+                                onClick={() => minimize()}
                                 className='minimize'
                             ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5 11V13H19V11H5Z"></path></svg>
                             </button>
