@@ -5,7 +5,6 @@ const Calculator = () => {
   return (
     <div className='calc'>
         <h1>CALCULATOR</h1>
-      
     </div>
   )
 }
