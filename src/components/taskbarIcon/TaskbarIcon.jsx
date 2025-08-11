@@ -5,6 +5,7 @@ import gsap from 'gsap'
 
 const TaskbarIcon = ({iconImage, isFocused, onClick, isMinimized}) => {
     const imgRef = useRef()
+    
     useGSAP(()=>{
             if (isMinimized) {
         var tl = gsap.timeline()
@@ -23,7 +24,7 @@ const TaskbarIcon = ({iconImage, isFocused, onClick, isMinimized}) => {
 
   return (
     <>
-    <div  onClick={onClick} className="taskBarIcon">
+    <div  onClick={onClick} className="taskBarIcon cursor-target">
         <img ref={imgRef} src={iconImage} alt="" />
         <div style={{width: isFocused?"35%":"10%"}} className="iconlineIsFocused"></div>
     </div>

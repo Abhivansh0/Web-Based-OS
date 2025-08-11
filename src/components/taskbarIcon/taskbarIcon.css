@@ -6,7 +6,8 @@
     flex-direction: column;
     justify-content: center;
     align-content: center;
-    border: 1px solid #292929;
+    border: 1px solid rgba(255, 255, 255, 0.57);
+    border-radius: 10px;
     /* margin-bottom: 10px; */
 }
 
@@ -26,12 +27,12 @@
 
 .iconlineIsFocused{
     position: absolute;
-    bottom: 0;
+    bottom: 2px;
     left: 50%;
     transform: translateX(-50%);
     width: 35%;
     margin: auto;
-    height: 3px;
+    height: 2px;
     /* border: 1px solid white; */
     border-radius: 0.3vw;
     background-color: rgba(255, 255, 255, 0.479);

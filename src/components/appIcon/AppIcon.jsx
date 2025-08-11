@@ -50,7 +50,7 @@ const AppIcon = ({ iconName, iconImage, size }) => {
 
   return (
     <>
-      <div ref={iconRef} onDoubleClick={() => handleClick()} className="icon">
+      <div ref={iconRef} onDoubleClick={() => handleClick()} className="icon cursor-target">
         <div className="iconImage">
           <img src={iconImage} alt="" />
         </div>

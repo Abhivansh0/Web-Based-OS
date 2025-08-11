@@ -19,6 +19,9 @@ const useWindowStore = create((set, get) => ({
     openedApps: [],
     windows: [],
 
+    lockWindowProps: false,
+    setLockWindowProps: (lock) => set({ lockWindowProps: lock }),
+
     bringToFront: (id) => set((state) => {
         const windows = [...state.windows];
         const index = windows.findIndex(win => win.id === id);
@@ -89,7 +92,7 @@ const useWindowStore = create((set, get) => ({
             }
             
         }
-        const updatedWindows = state.windows.map((win, i) => {
+        let updatedWindows = state.windows.map((win, i) => {
             if (win.id === id) {
                 return {
                     ...win,
@@ -98,10 +101,15 @@ const useWindowStore = create((set, get) => ({
                 }
             }
             return {
-                ...win,
-                isFocused: i === nextFocusedWindow
+                ...win
             }
         })
+
+        if (nextFocusedWindow !== -1) {
+            const nextWindowId = updatedWindows[nextFocusedWindow].id;
+            updatedWindows = zIndexManager(updatedWindows, nextWindowId)
+        }
+
         return { windows: updatedWindows }
     }),
 

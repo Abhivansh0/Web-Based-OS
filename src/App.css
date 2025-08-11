@@ -11,7 +11,7 @@
 }
 
 .taskbar {
-  height: 50px; /* Your fixed taskbar height */
+   /* Your fixed taskbar height */
   flex-shrink: 0; /* Prevents the taskbar from shrinking */
-  background-color: #333;
+  /* background-color: #333; */
 }

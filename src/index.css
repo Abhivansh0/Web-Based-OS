@@ -9,3 +9,19 @@ html, body{
     height: 100%;
     overflow: hidden;
 }
+@font-face {
+    font-family: "boot";
+    src: url(../../assets/fonts/ROUND8-FOUR.otf);
+}
+@font-face {
+    font-family: "boot1";
+    src: url(../../assets/fonts/7v88vbNPUPh3PX8XhEqCZvmuic.ttf);
+}
+@font-face {
+    font-family: "boot2";
+    src: url(../../assets/fonts/d3tHnaQIAeqiE5hGcRw4mmgWYU.ttf);
+}
+@font-face {
+    font-family: "boot3";
+    src: url(../../assets/fonts/ml8WBou3qLRVFQzTmsYLrcQlG3s.ttf);
+}

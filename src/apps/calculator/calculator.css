@@ -1,6 +1,12 @@
 .calc{
-    height: 100vh;
+    height: 100%;
     width: 100%;
     background-color: aqua;
     position: relative;
+}
+.calc h1{
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
 }

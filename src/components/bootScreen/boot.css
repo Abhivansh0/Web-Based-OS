@@ -1,0 +1,85 @@
+@font-face {
+    font-family: "boot";
+    src: url(../../assets/fonts/ROUND8-FOUR.otf);
+}
+@font-face {
+    font-family: "boot1";
+    src: url(../../assets/fonts/7v88vbNPUPh3PX8XhEqCZvmuic.ttf);
+}
+@font-face {
+    font-family: "boot2";
+    src: url(../../assets/fonts/d3tHnaQIAeqiE5hGcRw4mmgWYU.ttf);
+}
+@font-face {
+    font-family: "boot3";
+    src: url(../../assets/fonts/ml8WBou3qLRVFQzTmsYLrcQlG3s.ttf);
+}
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.boot-container{
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    /* background-color: brown; */
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.loading{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    /* gap: 1vw; */
+    position: relative;
+    /* border: 2px solid white; */
+    overflow: hidden;
+    color: #FFFFFF;
+    width: fit-content;
+    z-index: 999;
+    font-family: "boot3";
+    font-size: 5vw;
+    letter-spacing: -10px;
+    width: 50vw;
+    transform-origin: left;
+    line-height: 0.8;
+    height: 15.3vh;
+}
+.loading >:nth-child(2){
+    /* font-size: 8.7vw; */
+    /* opacity: 0; */
+    position: absolute;
+}
+.welcome span{
+    opacity: 0;
+}
+.loading h1{
+    display: flex;
+}
+.loading h1 span{
+    display: inline-block;
+}
+
+
+
+.boot-screen-up{
+    position: absolute;
+    z-index: 998;
+    top: 0;
+    width: 100%;
+    background-color: #0A0A0A;
+    height: 50%;
+}
+.boot-screen-down{
+    z-index: 998;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    background-color: #0A0A0A;
+    height: 50%;
+}

@@ -1,6 +1,10 @@
 .terminal{
-    height: 100vh;
+    height: 100%;
     width: 100%;
-    background-color: white;
+    background-color: #111;
     position: relative;
+}
+.terminal h1{
+    position: absolute;
+    top: 0;
 }
