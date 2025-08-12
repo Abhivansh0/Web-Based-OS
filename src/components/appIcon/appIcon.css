@@ -10,9 +10,7 @@
     justify-content: space-around;
     align-items: center;
 }
-.icon:hover{
-    cursor: pointer;
-}
+
 
 .iconImage {
     height: 50px;
