@@ -77,7 +77,6 @@ Designed to help students **visualize OS internals**, explore resource constrain
 
 ## 📦 Under Construction
 
-- [ ] ⚙️ **Dynamic Taskbar** (with active process indicators)
 - [ ] 🪄 **Task Manager App** (kill processes, view stats)
 - [ ] 💻 **Terminal Emulator**
 - [ ] 📁 **UI/UX FileSystem**
@@ -94,7 +93,8 @@ Designed to help students **visualize OS internals**, explore resource constrain
 ✅ Process Lifecycle Management  
 ✅ CPU & Memory Constraints + Errors  
 ✅ Multitasking + Window System  
-🚧 Taskbar + Task Manager (In Progress)  
+✅ Taskbar 
+🚧 Task Manager (In Progress)  
 
 ---
 
