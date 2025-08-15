@@ -19,7 +19,7 @@
 }
 
 .taskbar_centre{
-    background-color: rgba(255, 255, 255, 0.259);
+    background-color: rgba(255, 255, 255, 0.056);
     padding: 0.5vw 1vw;
     border: 1px solid rgba(255, 255, 255, 0.57);
     backdrop-filter: blur(10px);

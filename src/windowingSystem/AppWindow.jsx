@@ -236,7 +236,7 @@ const AppWindow = ({ windowData, children, appImg }) => {
                 disableDragging={isMaximized || isAnimating}
                 enableResizing={!isMaximized && !isAnimating}
             >
-                <div style={{ zIndex: zIndex }} onClick={() => bringTofront(id)} ref={windowRef} className="app_window">
+                <div style={{ zIndex:zIndex }} onClick={() => bringTofront(id)} ref={windowRef} className="app_window">
                     <div onDoubleClick={() => handleMaximizeToggle()} className="status_bar cursor-target">
                         <div className="app_name"> <img src={appImg} alt="" /> {name}</div>
                         <div className="window_btns">
