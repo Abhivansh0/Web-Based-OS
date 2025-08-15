@@ -48,13 +48,14 @@
     width: 50vw;
     transform-origin: left;
     line-height: 0.8;
-    height: 15.3vh;
+    height: 150px;
 }
 .loading >:nth-child(2){
     /* font-size: 8.7vw; */
     /* opacity: 0; */
     position: absolute;
 }
+
 .welcome span{
     opacity: 0;
 }
@@ -64,6 +65,9 @@
 .loading h1 span{
     display: inline-block;
 }
+.loading h1 span:nth-child(5){
+    color: rgb(251, 0, 255);
+}
 
 
 
@@ -72,7 +76,7 @@
     z-index: 998;
     top: 0;
     width: 100%;
-    background-color: #0A0A0A;
+    background-color: black;
     height: 50%;
 }
 .boot-screen-down{
@@ -80,6 +84,6 @@
     bottom: 0;
     position: absolute;
     width: 100%;
-    background-color: #0A0A0A;
+    background-color: black;
     height: 50%;
 }

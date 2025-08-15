@@ -3,11 +3,13 @@ import '../bootScreen/boot.css'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { CSSPlugin } from "gsap/CSSPlugin";
+import LetterGlitch from './GridDistortion';
+import Squares from './Squares';
 
 gsap.registerPlugin(CSSPlugin);
 
 
-const BootScreen = ({setBootScreen}) => {
+const BootScreen = ({ setBootScreen }) => {
 
     function breakText(selector, spacing) {
         const elements = document.querySelectorAll(selector);
@@ -35,7 +37,7 @@ const BootScreen = ({setBootScreen}) => {
 
 
     useGSAP(() => {
-        const tl = gsap.timeline({delay:1})
+        const tl = gsap.timeline({ delay: 1 })
         tl.to(".up span", {
             // delay: 1,
             y: "-100%",
@@ -51,34 +53,38 @@ const BootScreen = ({setBootScreen}) => {
             repeat: 3
         }, "0.01")
         tl.to(".load span", {
-            opacity:0,
-            stagger:0.08,
-            duration:1
+            opacity: 0,
+            stagger: 0.08,
+            duration: 1
         })
         tl.to(".welcome span", {
-            delay:0.5,
-            opacity:1,
-            stagger:0.08,
-            duration:1
+            delay: 0.5,
+            opacity: 1,
+            stagger: 0.08,
+            duration: 1
         }, "<")
         tl.to(".loading", {
-            delay:0.5,
-            scaleY:0,
+            delay: 0.5,
+            scaleY: 0,
             transformOrigin: "center",
-            duration:0.3
+            duration: 0.3
         })
         tl.to(upRef.current, {
-            y: "-100%",
+            delay:0.5,
+            // y: "-100%",
+            scale:2,
             ease: "linear",
-            delay: 0.2,
-            duration: 0.5
+            duration: 0.5,
+            opacity: 0
         })
         tl.to(downRef.current, {
-            y: "100%",
+            // y: "100%",
+            scale:2,
             ease: "linear",
             // delay:1,
             duration: 0.5,
-            onComplete: ()=>{
+            opacity: 0,
+            onComplete: () => {
                 setBootScreen(false)
             }
 
@@ -93,12 +99,28 @@ const BootScreen = ({setBootScreen}) => {
     return (
         <>
             <div className="boot-container">
-                <div ref={upRef} className="boot-screen-up"></div>
-                <div ref={downRef} className="boot-screen-down"></div>
+                <div ref={upRef} className="boot-screen-up">
+                    <Squares
+                        speed={0.5}
+                        squareSize={50}
+                        direction='diagonal' // up, down, left, right, diagonal
+                        borderColor='#9000ffff'
+                        hoverFillColor='#9000ffff'
+                    />
+                </div>
+                <div ref={downRef} className="boot-screen-down">
+                    <Squares
+                        speed={0.5}
+                        squareSize={50}
+                        direction='diagonal' // up, down, left, right, diagonal
+                        borderColor='#9000ffff'
+                        hoverFillColor='#9000ffff'
+                    />
+                </div>
                 <div className="loading">
                     <h1 className='load up' ref={breakRef} >LOADING</h1>
                     <h1 className='welcome'>WELCOME</h1>
-                    <h1 className='load down'  ref={breakRef} >LOADING</h1>
+                    <h1 className='load down' ref={breakRef} >LOADING</h1>
                 </div>
 
             </div>
