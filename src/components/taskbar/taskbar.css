@@ -1,19 +1,11 @@
 .taskbar{
-    /* padding: 0 1vw 0 1vw; */
     position: fixed;
     z-index: 100;
     bottom: 5px;
     width: fit-content;
     margin: auto;
     left: 50%;
-    /* padding: 1vw; */
-    /* padding: 1vw; */
     transform: translateX(-50%);
-    /* border: 1px solid gray; */
-    /* height: 46px; */
-    /* display: flex; */
-    /* justify-content: space-between; */
-    /* background-color: #292929; */
     display: flex;
     justify-content: center;
 }
@@ -26,31 +18,32 @@
     min-width: 45px;
     border-radius: 2vw;
     display: flex;
+    justify-content: center;
+    align-items: end;
     gap: 1vw;
-    height: 100%;
+    height: 61.19;
     display: flex;
-    transition: all ease 0.5s;
+    position: sticky;
+    will-change: width;
+    /* transition: width 0.3s ease; */
 }
-.taskbar_time{
+
+/* .taskbar_time{
     position: absolute;
     height: 100%;
     right: 0;
     width: 15vw;
-}
+} */
 
 .icons_dock{
-    /* padding: 1vw; */
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
     transition: all ease 0.5s;
     will-change: width;
-
-    /* border: 1px solid white; */
-    /* width: fit-content; */
 }
-.icons_dock.has-icons {
+.icons_dock .has-icons {
     width: auto;
     opacity: 1;
 }
@@ -59,5 +52,4 @@
     height: 40px;
     width: 45px;
     background-color: crimson;
-    /* border: 1px solid white; */
 }

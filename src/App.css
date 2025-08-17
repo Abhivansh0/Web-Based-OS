@@ -10,7 +10,7 @@
   position: relative; /* So windows can be positioned within it */
 }
 
-.taskbar {
+.taskbar-footer {
    /* Your fixed taskbar height */
   flex-shrink: 0; /* Prevents the taskbar from shrinking */
   /* background-color: #333; */

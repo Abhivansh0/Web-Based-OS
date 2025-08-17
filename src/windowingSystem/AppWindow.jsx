@@ -8,6 +8,7 @@ import appRegistry from '../store/appRegistry'
 import useWindowStore from '../store/windowStore'
 import { useKernel } from '../context/kernelContext'
 import TargetCursor from '../components/cursor/TargetCursor'
+import {motion} from 'motion/react'
 
 const AppWindow = ({ windowData, children, appImg }) => {
     const { createApp, terminateApp, memoryManager, processManager, scheduler, storageSystem, fileSystem } = useKernel()
@@ -23,11 +24,31 @@ const AppWindow = ({ windowData, children, appImg }) => {
     const maximizeWindow = useWindowStore((state) => state.maximizeWindow);
     const moveWindow = useWindowStore((state) => state.moveWindow);
     const resizeWindow = useWindowStore((state) => state.resizeWindow);
+    const animationRequests = useWindowStore(state => state.animationRequests);
+    const clearAnimationRequest = useWindowStore(state => state.clearAnimationRequest);
 
     const [localPosition, setlocalPosition] = useState(position)
     const [localSize, setlocalSize] = useState(size)
     const [isAnimating, setIsAnimating] = useState(false)
-    const preMaximizedState = useRef({position: position, size: size})
+    const preMaximizedState = useRef({ position: position, size: size })
+    const hasEntered = useRef(false)
+    const layerRef = useRef()
+
+
+    useEffect(() => {
+    if (!windowRef.current || hasEntered.current ) return;
+
+    hasEntered.current = true
+    gsap.fromTo(windowRef.current,
+        { opacity: 0, scale: 0.9 },
+        {
+            opacity: 1,
+            scale: 1,
+            duration: 0.5,
+            ease: 'back.inOut'
+        }
+    );
+}, []);
 
     // Cleanup animations on unmount
     useEffect(() => {
@@ -43,10 +64,55 @@ const AppWindow = ({ windowData, children, appImg }) => {
             setlocalPosition(position)
             setlocalSize(size)
             if (!isMaximized) {
-                preMaximizedState.current = {position, size}
+                preMaximizedState.current = { position, size }
             }
         }
     }, [position, size, isAnimating, isMaximized])
+
+    useEffect(() => {
+        const request = animationRequests[id];
+        if (!request) return;
+
+        if (request === "minimize") {
+            minimize(); // your existing minimize() function
+        } else if (request === "restore") {
+            restoreAnimation(); // write similar to restore GSAP animation
+        }
+
+        // Clear request after handling
+        clearAnimationRequest(id);
+    }, [animationRequests[id]]);
+
+    const restoreAnimation = () => {
+        if (isAnimating) return;
+        setIsAnimating(true);
+        bringTofront(id)
+
+        var tl = gsap.timeline()
+
+        tl.fromTo(windowRef.current,
+            { y: window.innerHeight + 100, scale: 0, opacity: 0.7 },
+            {
+                x: 0,
+                y: 0,
+                scale: 1,
+                opacity: 1,
+                duration: 0.6,
+                ease: "power2.out",
+                onComplete: () => {
+                    toggleMinimize(id); // Zustand updates final state
+                    setIsAnimating(false);
+                }
+            }
+        )
+        tl.to(windowRef.current.querySelector('.layer').children, {
+            opacity:0,
+            stagger:0.04,
+            duration:0.5,
+            reversed:true
+        }, '-=0.2')
+    };
+
 
     let lastPosition = useRef(position)
     let lastSize = useRef(size)
@@ -87,41 +153,53 @@ const AppWindow = ({ windowData, children, appImg }) => {
         if (isAnimating) return
         setIsAnimating(true)
 
-        gsap.to(windowRef.current, {
+        gsap.killTweensOf(windowRef.current);
+
+        var tl = gsap.timeline({
+             onComplete: () => {
+                toggleMinimize(id)
+                setIsAnimating(false)
+                
+            }
+        })
+
+        tl.to(windowRef.current.querySelector('.layer').children, {
+            stagger:0.04,
+            duration:0.5,
+            opacity:1
+        })
+        tl.to(windowRef.current, {
             y: window.innerHeight + 100,
-            scale: 0.8,
+            // x: window.innerWidth/2,
+            scale: 0,
             opacity: 0.7,
             duration: 0.5,
             ease: "power2.inOut",
-            onComplete: () => {
-                toggleMinimize(id)
-                setIsAnimating(false)
-            }
-        })
+        }, '-=0.4')
     }
 
     // FIX: Single useGSAP hook for minimize/restore logic
     const wasMinimized = useRef(false)
-    
-    useGSAP(() => {
-        if (isMinimized && !wasMinimized.current) {
-            // Window just got minimized - set flag
-            wasMinimized.current = true
-        } else if (!isMinimized && wasMinimized.current && windowRef.current && !isAnimating) {
-            // Restoring from minimize - animate back in
-            gsap.fromTo(windowRef.current, 
-                { y: window.innerHeight + 100, scale: 0.8, opacity: 0.7 },
-                { 
-                    y: 0, 
-                    scale: 1, 
-                    opacity: 1, 
-                    duration: 0.6, 
-                    ease: "power2.out" 
-                }
-            )
-            wasMinimized.current = false
-        }
-    }, [isMinimized, isAnimating])
+
+    // useGSAP(() => {
+    //     if (isMinimized && !wasMinimized.current) {
+    //         // Window just got minimized - set flag
+    //         wasMinimized.current = true
+    //     } else if (!isMinimized && wasMinimized.current && windowRef.current && !isAnimating) {
+    //         // Restoring from minimize - animate back in
+    //         gsap.fromTo(windowRef.current,
+    //             { y: window.innerHeight + 100, scale: 0.8, opacity: 0.7 },
+    //             {
+    //                 y: 0,
+    //                 scale: 1,
+    //                 opacity: 1,
+    //                 duration: 0.6,
+    //                 ease: "power2.out"
+    //             }
+    //         )
+    //         wasMinimized.current = false
+    //     }
+    // }, [isMinimized, isAnimating])
 
     const handleMaximizeToggle = () => {
         if (isAnimating) return
@@ -136,12 +214,12 @@ const AppWindow = ({ windowData, children, appImg }) => {
             const targetSize = { width: window.innerWidth, height: window.innerHeight }
             const startSize = { ...localSize }
             const startPos = { ...localPosition }
-            
+
             gsap.to({ progress: 0 }, {
                 progress: 1,
                 duration: 0.5,
                 ease: "power2.inOut",
-                onUpdate: function() {
+                onUpdate: function () {
                     const progress = this.targets()[0].progress
                     const currentSize = {
                         width: startSize.width + (targetSize.width - startSize.width) * progress,
@@ -168,12 +246,12 @@ const AppWindow = ({ windowData, children, appImg }) => {
             const { position: restorePos, size: restoreSize } = preMaximizedState.current
             const startSize = { ...localSize }
             const startPos = { ...localPosition }
-            
+
             gsap.to({ progress: 0 }, {
                 progress: 1,
                 duration: 0.5,
                 ease: "power2.inOut",
-                onUpdate: function() {
+                onUpdate: function () {
                     const progress = this.targets()[0].progress
                     const currentSize = {
                         width: startSize.width + (restoreSize.width - startSize.width) * progress,
@@ -199,13 +277,17 @@ const AppWindow = ({ windowData, children, appImg }) => {
     }
 
     // Don't render if minimized and not animating
-    if (isMinimized && !isAnimating) {
-        return null
-    }
+if (isMinimized && !isAnimating && wasMinimized.current) {
+    return null;
+}
 
     return (
         <>
             <Rnd
+            style={{
+                pointerEvents: isMinimized ? 'none':'all',
+                cursor: isMinimized ? 'none': ''
+            }}
                 onDragStart={() => bringTofront(id)}
                 onResize={() => bringTofront(id)}
                 onDragStop={(e, d) => {
@@ -234,9 +316,34 @@ const AppWindow = ({ windowData, children, appImg }) => {
                 bounds="body"
                 dragHandleClassName="status_bar"
                 disableDragging={isMaximized || isAnimating}
-                enableResizing={!isMaximized && !isAnimating}
+                enableResizing={!isMaximized && !isAnimating && !isMinimized}
             >
-                <div style={{ zIndex:zIndex }} onClick={() => bringTofront(id)} ref={windowRef} className="app_window">
+                <motion.div
+                transition={{
+                    ease:'backInOut',
+                    duration:0.5
+                }}
+                exit={{
+                    opacity:0,
+                    scale:0.9
+                }}
+                
+                
+                 style={{ zIndex: zIndex }} onClick={() => bringTofront(id)} ref={windowRef} className="app_window">
+                    <div className="layer">
+                        <div  className="layer-box"></div>
+                        <div className="layer-box"></div>
+                        <div className="layer-box"></div>
+                        <div className="layer-box"></div>
+                        <div className="layer-box"></div>
+                        <div className="layer-box"></div>
+                        <div className="layer-box"></div>
+                        <div className="layer-box"></div>
+                        <div className="layer-box"></div>
+                        <div className="layer-box"></div>
+                        <div className="layer-box"></div>
+                        <div className="layer-box"></div>
+                    </div>
                     <div onDoubleClick={() => handleMaximizeToggle()} className="status_bar cursor-target">
                         <div className="app_name"> <img src={appImg} alt="" /> {name}</div>
                         <div className="window_btns">
@@ -245,7 +352,7 @@ const AppWindow = ({ windowData, children, appImg }) => {
                                 onMouseEnter={() => handleHover(minimizeRef)}
                                 onMouseLeave={() => mouseLeave(minimizeRef)}
                                 onClick={(e) => {
-                                    e.stopPropagation(); 
+                                    e.stopPropagation();
                                     minimize(); // FIX: Call the minimize function instead of toggleMinimize
                                 }}
                                 className='minimize cursor-target'
@@ -257,15 +364,15 @@ const AppWindow = ({ windowData, children, appImg }) => {
 
                             <button
                                 ref={maximizeRef}
-                                onClick={(e) => {e.stopPropagation(); handleMaximizeToggle()}}
+                                onClick={(e) => { e.stopPropagation(); handleMaximizeToggle() }}
                                 onMouseEnter={() => handleHover(maximizeRef)}
                                 onMouseLeave={() => mouseLeave(maximizeRef)}
                                 className='maximize cursor-target'
                             >
-                                {isMaximized ? 
+                                {isMaximized ?
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M6.99979 7V3C6.99979 2.44772 7.4475 2 7.99979 2H20.9998C21.5521 2 21.9998 2.44772 21.9998 3V16C21.9998 16.5523 21.5521 17 20.9998 17H17V20.9925C17 21.5489 16.551 22 15.9925 22H3.00728C2.45086 22 2 21.5511 2 20.9925L2.00276 8.00748C2.00288 7.45107 2.4518 7 3.01025 7H6.99979ZM8.99979 7H15.9927C16.549 7 17 7.44892 17 8.00748V15H19.9998V4H8.99979V7ZM4.00255 9L4.00021 20H15V9H4.00255Z"></path>
-                                    </svg> : 
+                                    </svg> :
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3ZM5 5V19H19V5H5Z"></path>
                                     </svg>
@@ -274,7 +381,7 @@ const AppWindow = ({ windowData, children, appImg }) => {
 
                             <button
                                 ref={crossRef}
-                                onClick={(e) => {e.stopPropagation(); close()}}
+                                onClick={(e) => { e.stopPropagation(); close() }}
                                 onMouseEnter={() => { handleHover(crossRef) }}
                                 onMouseLeave={() => mouseLeave(crossRef)}
                                 className='cross cursor-target'
@@ -289,7 +396,7 @@ const AppWindow = ({ windowData, children, appImg }) => {
                     <div className="content">
                         {children}
                     </div>
-                </div>
+                </motion.div>
             </Rnd>
         </>
     )

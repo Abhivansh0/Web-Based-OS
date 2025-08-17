@@ -1,11 +1,14 @@
 .container{
     width: 35%;
     height: 70%;
+    /* margin: auto; */
     /* border: 2px solid white; */
     position: fixed;
-    z-index: 100;
+    z-index: 101;
     bottom: 65px;
-    left: 0.5vw;
+    left: 50%;
+    transform: translateX(-50%);
     border-radius: 1vw;
-    background-color: cadetblue;
+    /* background-color: cadetblue; */
+    border: 1px solid white;
 }
