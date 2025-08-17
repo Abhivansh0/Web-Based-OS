@@ -3,7 +3,7 @@ import '../bootScreen/boot.css'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { CSSPlugin } from "gsap/CSSPlugin";
-import LetterGlitch from './GridDistortion';
+import LetterGlitch from './GlassSurface';
 import Squares from './Squares';
 
 gsap.registerPlugin(CSSPlugin);
@@ -37,19 +37,22 @@ const BootScreen = ({ setBootScreen }) => {
 
 
     useGSAP(() => {
-        const tl = gsap.timeline({ delay: 1 })
+        const tl = gsap.timeline({
+             delay: 1,
+             onComplete:()=>{setBootScreen(false)}
+             })
         tl.to(".up span", {
             // delay: 1,
             y: "-100%",
-            stagger: 0.2,
-            duration: 0.3,
+            stagger: 0.25,
+            duration: 0.5,
             repeat: 3
         })
         tl.to(".down span", {
             // delay: 1,
             y: "-100%",
-            stagger: 0.2,
-            duration: 0.3,
+            stagger: 0.25,
+            duration: 0.5,
             repeat: 3
         }, "0.01")
         tl.to(".load span", {
@@ -63,32 +66,20 @@ const BootScreen = ({ setBootScreen }) => {
             stagger: 0.08,
             duration: 1
         }, "<")
-        tl.to(".loading", {
-            delay: 0.5,
-            scaleY: 0,
-            transformOrigin: "center",
-            duration: 0.3
+        tl.to(".boot-layer-box", {
+            opacity:1,
+            stagger:0.1,
+            duration:0.4
         })
-        tl.to(upRef.current, {
-            delay:0.5,
-            // y: "-100%",
-            scale:2,
-            ease: "linear",
-            duration: 0.5,
-            opacity: 0
-        })
-        tl.to(downRef.current, {
-            // y: "100%",
-            scale:2,
-            ease: "linear",
-            // delay:1,
-            duration: 0.5,
-            opacity: 0,
-            onComplete: () => {
-                setBootScreen(false)
-            }
-
-        }, "<")
+        tl.to(".boot-layer-box", {
+            opacity:0,
+            stagger:0.1,
+            duration:0.4,
+            // reversed:true
+        }, '-=0.6')
+        tl.to(".boot-container", {
+            opacity:0
+        }, '<')
 
     })
 
@@ -98,14 +89,28 @@ const BootScreen = ({ setBootScreen }) => {
 
     return (
         <>
+        <div className="boot-layer">
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+            <div className="boot-layer-box"></div>
+        </div>
             <div className="boot-container">
                 <div ref={upRef} className="boot-screen-up">
                     <Squares
                         speed={0.5}
                         squareSize={50}
                         direction='diagonal' // up, down, left, right, diagonal
-                        borderColor='#9000ffff'
-                        hoverFillColor='#9000ffff'
+                        borderColor='#7FA0AB'
+                        hoverFillColor='#7FA0AB'
                     />
                 </div>
                 <div ref={downRef} className="boot-screen-down">
@@ -113,8 +118,8 @@ const BootScreen = ({ setBootScreen }) => {
                         speed={0.5}
                         squareSize={50}
                         direction='diagonal' // up, down, left, right, diagonal
-                        borderColor='#9000ffff'
-                        hoverFillColor='#9000ffff'
+                        borderColor='#7FA0AB'
+                        hoverFillColor='#7FA0AB'
                     />
                 </div>
                 <div className="loading">

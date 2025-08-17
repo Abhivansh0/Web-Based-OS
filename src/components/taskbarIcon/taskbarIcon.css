@@ -1,5 +1,6 @@
 .taskBarIcon{
     position: relative;
+    overflow: hidden;
     height: 40px;
     width: 45px;
     display: flex;
@@ -24,9 +25,24 @@
     width: 60%;
     margin: auto;
 }
-
+.task-layer{
+    pointer-events: none;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr ;
+    grid-template-rows: 1fr 1fr ;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    /* background-color: black; */
+}
+.task-layer-box{
+    background-color: #7C9EA8;
+    opacity: 0;
+}
 .iconlineIsFocused{
     position: absolute;
+    z-index: 2;
     bottom: 2px;
     left: 50%;
     transform: translateX(-50%);

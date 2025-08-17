@@ -6,7 +6,7 @@ import gsap from 'gsap'
 import { useRef } from 'react'
 
 
-const AppIcon = ({ iconName, iconImage, size }) => {
+const AppIcon = ({ iconName, iconImage, size, isError, setErrorName }) => {
   const { createApp, terminateApp, memoryManager, processManager, scheduler, storageSystem, fileSystem, getProcessStats, getSystemStats } = useKernel()
   const addWindow = useWindowStore((state) => state.addWindow);
   const bringTofront = useWindowStore((state) => state.bringToFront);
@@ -19,6 +19,15 @@ const AppIcon = ({ iconName, iconImage, size }) => {
 
 
   const iconRef = useRef()
+
+  useGSAP(()=>{
+    gsap.from(iconRef.current, {
+      duration:0.5,
+      y:50,
+      delay:15,
+      opacity:0
+    })
+  }, [])
 
   const singleClick = () => {
     gsap.to(iconRef.current, {
@@ -44,7 +53,9 @@ const AppIcon = ({ iconName, iconImage, size }) => {
       
     }
     else {
-      alert(error)
+      setErrorName(error)
+      console.log(error)
+      isError()
     }
   }
 

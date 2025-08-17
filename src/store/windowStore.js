@@ -18,6 +18,17 @@ function zIndexManager(windows, id) {
 const useWindowStore = create((set, get) => ({
     openedApps: [],
     windows: [],
+    animationRequests: {},
+
+    requestAnimation: (id, type)=> set(state =>({
+        animationRequests: {...state.animationRequests, [id]: type}
+    })),
+
+    clearAnimationRequest: (id)=>set(state=> {
+        const newRequest = { ...state.animationRequests}
+        delete newRequest[id]
+        return {animationRequests: newRequest}
+    }),
 
     lockWindowProps: false,
     setLockWindowProps: (lock) => set({ lockWindowProps: lock }),
