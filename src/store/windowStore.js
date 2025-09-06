@@ -18,16 +18,18 @@ function zIndexManager(windows, id) {
 const useWindowStore = create((set, get) => ({
     openedApps: [],
     windows: [],
+    processes: [],
+    monitoringInterval: null,
     animationRequests: {},
 
-    requestAnimation: (id, type)=> set(state =>({
-        animationRequests: {...state.animationRequests, [id]: type}
+    requestAnimation: (id, type) => set(state => ({
+        animationRequests: { ...state.animationRequests, [id]: type }
     })),
 
-    clearAnimationRequest: (id)=>set(state=> {
-        const newRequest = { ...state.animationRequests}
+    clearAnimationRequest: (id) => set(state => {
+        const newRequest = { ...state.animationRequests }
         delete newRequest[id]
-        return {animationRequests: newRequest}
+        return { animationRequests: newRequest }
     }),
 
     lockWindowProps: false,
@@ -38,8 +40,8 @@ const useWindowStore = create((set, get) => ({
         const index = windows.findIndex(win => win.id === id);
         if (index === -1) return { windows };
 
-        const targetWin = {...windows.splice(index, 1)[0], isFocused: true};
-        const reordered = windows.map(win=>({...win, isFocused: false}))
+        const targetWin = { ...windows.splice(index, 1)[0], isFocused: true };
+        const reordered = windows.map(win => ({ ...win, isFocused: false }))
         reordered.push(targetWin);
 
         return {
@@ -55,6 +57,13 @@ const useWindowStore = create((set, get) => ({
             id: windowsData.pid,
             name: windowsData.ProcessName
         }
+        const newProcess = {
+            pid: windowsData.pid,
+            processName: windowsData.ProcessName,
+            cpuUsage: windowsData.cpuUsage || 0,
+            memoryUsage: windowsData.memoryUsage || 0,
+            state: windowsData.state || 'running',
+        }
         const newWindow = {
             id: windowsData.pid,
             name: windowsData.ProcessName,
@@ -69,11 +78,12 @@ const useWindowStore = create((set, get) => ({
             isFocused: true,
 
         }
-        const alreadyOpen = get().openedApps.find(app=> app.name === windowsData.ProcessName)
-        
+        const alreadyOpen = get().openedApps.find(app => app.name === windowsData.ProcessName)
+
         set((state) => ({
             windows: [...state.windows.map(win => ({ ...win, isFocused: false })), newWindow],
-            openedApps: alreadyOpen ? state.openedApps: [...state.openedApps, newApp]
+            openedApps: alreadyOpen ? state.openedApps : [...state.openedApps, newApp],
+            processes: [...(state.processes || []), newProcess]
         }))
     },
 
@@ -81,27 +91,28 @@ const useWindowStore = create((set, get) => ({
         set((state) => {
             const filtered = state.windows.filter((win) => win.id !== pid)
             return {
-                windows: filtered.map((win, i)=>({
+                windows: filtered.map((win, i) => ({
                     ...win,
                     zIndex: i + 1,
                     isFocused: i === filtered.length - 1
                 })),
-                openedApps: state.openedApps.filter((win)=> win.id !== pid)
+                openedApps: state.openedApps.filter((win) => win.id !== pid),
+                processes: state.processes.filter((process) => process.pid !== pid)
             }
-            
+
         })
     },
 
     minimizeWindow: (id) => set((state) => {
-        const index = state.windows.findIndex(win=> win.id === id)
+        const index = state.windows.findIndex(win => win.id === id)
         let nextFocusedWindow = -1
         if (index === -1) return {}
-        for (let i = index - 1; i >=0; i--) {
+        for (let i = index - 1; i >= 0; i--) {
             if (!state.windows[i].isMinimized) {
                 nextFocusedWindow = i
                 break;
             }
-            
+
         }
         let updatedWindows = state.windows.map((win, i) => {
             if (win.id === id) {
@@ -124,12 +135,12 @@ const useWindowStore = create((set, get) => ({
         return { windows: updatedWindows }
     }),
 
-    toggleMinimize: (id) =>{
-        const {restoreMinimize, minimizeWindow, windows } = get()
-        const current = windows.find(win=> win.id === id)
+    toggleMinimize: (id) => {
+        const { restoreMinimize, minimizeWindow, windows } = get()
+        const current = windows.find(win => win.id === id)
         if (!current) return
 
-        current.isMinimized? restoreMinimize(id) : minimizeWindow(id) 
+        current.isMinimized ? restoreMinimize(id) : minimizeWindow(id)
     },
 
     maximizeWindow: (id) => {
@@ -181,6 +192,45 @@ const useWindowStore = create((set, get) => ({
                 win.id === id ? { ...win, size: newSize } : win
             )
         }))
+    },
+
+    updateProcessData: (updatedData) => {
+        set((state) => ({
+            processes: state.processes.map(process => {
+                const updated = updatedData.find(data => data.pid === process.pid);
+                return updated ? {
+                    ...process,
+                    cpuUsage: updated.cpuUsage || process.cpuUsage,
+                    memoryUsage: updated.memoryUsage || process.memoryUsage,
+                    state: updated.state || process.state
+                } : process;
+            })
+        }));
+    },
+
+    processMonitoring: (getProcessStats) => {
+        const { updateProcessData } = get();
+
+        const monitoringInterval = setInterval(() => {
+            const processStats = getProcessStats();
+
+            let allProcesses = [...processStats.ready, ...processStats.waiting];
+            if (processStats.running) {
+                allProcesses.push(processStats.running);
+            }
+
+            const schedulerData = allProcesses.map(process => ({
+                processName: process.name || 'Unknown',
+                pid: process.pid,
+                cpuUsage: process.cpuUsage || 0,
+                memoryUsage: process.memoryUsage || 0,
+                state: process.state
+            }));
+
+            updateProcessData(schedulerData);
+        }, 2000);
+
+        set({ monitoringInterval });
     },
 
 }

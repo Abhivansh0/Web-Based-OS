@@ -53,3 +53,11 @@
     width: 45px;
     background-color: crimson;
 }
+.taskmanager_btn {
+  width: 32px;
+  height: 32px;
+  background-color: rgb(43, 38, 185);
+  border-radius: 6px;
+  margin-left: 8px;
+  cursor: pointer;
+}

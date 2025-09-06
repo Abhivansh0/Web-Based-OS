@@ -1,0 +1,42 @@
+.taskmanager-overlay {
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 10vh;
+  z-index: 9999;
+}
+
+.taskmanager-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 15px black;
+  position: relative;
+}
+.data-row {
+  display: flex;
+  border-bottom: 1px solid white;
+  padding: 8px 0;
+}
+
+.header {
+  font-weight: bold;
+  background-color: white;
+  border-bottom: 2px solid rgb(187, 185, 185);
+}
+
+.table-column {
+  flex: 1;
+  padding: 0 10px;
+  word-break: break-word;
+}
+

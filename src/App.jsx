@@ -12,6 +12,7 @@ import iconRegistry from './store/iconRegistry'
 import { AnimatePresence } from "motion/react"
 import ErrorBox from './components/errorBox/ErrorBox'
 
+import TaskManager from './components/taskmanager/TaskManager'
 
 const App = () => {
 
@@ -19,19 +20,24 @@ const App = () => {
   const [errorName, seterrorName] = useState('')
 
   const handleError = ()=>{setisError(!isError)}
-
   const [isBooting, setIsBooting] = useState(true)
   // const [isDesktop, setIsDesktop] = useState(false)
   const [IsStart, setIsStart] = useState(false)
+  const [isTaskManagerOpen, setIsTaskManagerOpen] = useState(false)
+  
   const handleStartView = () => {
     setIsStart(!IsStart)
   }
-  const windows = useWindowStore((state) => state.windows)
+  
+  const toggleTaskManager = () => {
+  setIsTaskManagerOpen(!isTaskManagerOpen);
+}
 
+  const windows = useWindowStore((state) => state.windows)
+  
   return (
     <>
       <div className="app_container">
-
         <main className='main_content'>
           <Desktop setErrorName={seterrorName} isError={handleError} />
           { isError && < ErrorBox errorName={errorName} isError={handleError} />}
@@ -45,21 +51,19 @@ const App = () => {
             if (!Component) return null
             return (
 
-              <AppWindow key={win.id} appImg={image} windowData={win} >
+              <AppWindow key={win.id} appImg={image} windowData={win}>
                 <Component />
-                
               </AppWindow>
             )
           })}
           </AnimatePresence>
-
           {IsStart && <StartMenu />}
+         {isTaskManagerOpen && <TaskManager />}
         </main>
 
-        <footer className='taskbar-footer' >
-          <Taskbar start={IsStart} isStart={handleStartView} />
+        <footer className='taskbar-footer'>
+          <Taskbar start={IsStart} isStart={handleStartView} toggleTaskManager={toggleTaskManager} />
         </footer>
-
       </div>
     </>
   )
