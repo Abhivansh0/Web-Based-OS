@@ -9,7 +9,7 @@ import gsap from 'gsap'
 import { isTypedArray } from 'three/src/animation/AnimationUtils.js'
 import { AnimatePresence } from 'motion/react'
 
-const Taskbar = ({ isStart, start }) => {
+const Taskbar = ({ isStart, start, toggleTaskManager }) => {
 
       useGSAP(()=>{
     gsap.from(centerRef.current, {
@@ -73,6 +73,13 @@ const Taskbar = ({ isStart, start }) => {
             <div className="taskbar">
                 <div ref={centerRef} className=" taskbar_component taskbar_centre">
                     <div className="start_btn cursor-target" onClick={animation} ></div>
+                    
+                    <div
+                      className="taskmanager_btn cursor-target"
+                      onClick={toggleTaskManager}
+                      title="Open Task Manager"
+                    ></div>
+                    
                     <div className="icons_dock">
                         <AnimatePresence mode='popLayout'>
                         {openedApps.map(win => {
