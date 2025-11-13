@@ -162,7 +162,7 @@ Unlike standard web apps that have infinite virtual memory, WebOS enforces stric
 
 ## 📦 Under Construction
 
-- [ ] 🪄 **Task Manager App** (kill processes, view stats)
+- [ ] 🪄 **Task Manager App** (kill processes)
 - [ ] 💻 **Terminal Emulator**
 - [ ] 📁 **UI/UX FileSystem**
 - [ ] 🎨 **Full UI/UX Overhaul** after core features are finalized
@@ -179,7 +179,7 @@ Unlike standard web apps that have infinite virtual memory, WebOS enforces stric
 ✅ CPU & Memory Constraints + Errors  
 ✅ Multitasking + Window System  
 ✅ Taskbar 
-🚧 Task Manager (In Progress)  
+✅ Task Manager stats view (In Progress)  
 
 ---
 
