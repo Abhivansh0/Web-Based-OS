@@ -19,7 +19,7 @@ All system interactions occur through a **kernel-first control flow**, ensuring 
 
 ## 📸 Preview — WebOS Boot Sequence (Early Build)
 
-<video src="./assets/preview/webOSBoot.mp4" width="700" autoplay loop muted></video>
+<video src="./assets/preview/webOSBoot.mp4" width="700" controls></video>
 
 ---
 
