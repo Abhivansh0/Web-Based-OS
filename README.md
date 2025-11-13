@@ -129,22 +129,22 @@ MIT — free to use, modify, and build on.
 
 ---
 
-graph TD
+```mermaid
 
+graph TD
     subgraph "Presentation Layer (React + GSAP)"
-    
         UI[Desktop / Window Manager]
         Taskbar
         Apps[Applications]
     end
-    
+
     subgraph "State Bridge (Zustand)"
         Store[Authoritative Cache Store]
         subgraph "Gatekeeper"
             Actions[Request Handlers]
         end
     end
-    
+
     subgraph "Core Kernel (Vanilla JS)"
         PM[Process Manager]
         MM[Memory Manager]
@@ -152,11 +152,13 @@ graph TD
         FS[File System]
         Disk[Storage System]
     end
-    
+
     UI -->|User Interaction| Actions
     Actions -->|Request Resource| PM
     Actions -->|Request I/O| FS
     PM -->|Allocate| MM
     PM -->|Schedule| SCH
     FS -->|Write Blocks| Disk
+    
     Store -.->|State Sync| UI
+```
