@@ -21,10 +21,6 @@ All system interactions occur through a **kernel-first control flow**, ensuring 
 
 <video src="https://github.com/user-attachments/assets/60eb56e9-ddf7-41ad-9059-e626643431fe" width="700" autoplay muted loop></video>
 
-
-
-
-
 ---
 
 ## 🏗️ System Architecture
