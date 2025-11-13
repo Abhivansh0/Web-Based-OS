@@ -37,7 +37,7 @@ graph TD
     subgraph "State Bridge (Zustand WindowStore)"
         direction TB
         Actions["Action Handlers<br/>(createApp, closeApp)"]
-        StoreData["WindowsStore State<br/>(Windows, Processes, OpenedApps Arrays)"]
+        StoreData["WindowsStore State<br/>()"]
     end
 
     subgraph "Core Kernel (Vanilla JS)"
