@@ -80,7 +80,7 @@ graph TD
 
 ## ⚙️ Technical Deep Dive
 
-### The Custom Kernel
+### 1.The Custom Kernel
 
 #### 📦 MemoryManager
 - Implements **First-Fit Allocation**
@@ -106,13 +106,18 @@ graph TD
 - Creates, terminates, and tracks all app processes
 - Coordinates with memory and scheduler to maintain process states (`ready`, `running`, `waiting`)
 
-### The Rendering Engine (Registry Pattern)
+
+### 2.The Rendering Engine (Registry Pattern)
+
 - **App Registry:** A central dictionary maps string identifiers (e.g., "Terminal", "Calculator") to their React Components
 - **Window Factory:** The main App loop listens to the `windowStore`. When a new window is added to the state, it looks up the component in the Registry.
 - **The Wrapper (`AppWindow`):** The resolved component is injected into a generic `<AppWindow />` wrapper. This wrapper handles all the "OS-level" behavior—dragging, resizing (via `react-rnd`), closing, and minimizing—while the app component inside remains purely functional and isolated.
 
-### System Resilience & Error Simulation
+
+### 3.System Resilience & Error Simulation
+
 Unlike standard web apps that have infinite virtual memory, WebOS enforces strict, realistic resource constraints managed by the Kernel. The system implements a robust error-handling pipeline:
+
 - 🔥 **CPU Overload:** If the total CPU usage of active processes approaches 100%, the Scheduler throttles new process creation and the Kernel throws a CPU_OVERLOAD error, preventing system instability.
 - 🧠 **Out of Memory (OOM):** The Memory Manager tracks available blocks. If an app requests more memory than available (fragmentation or full usage), the Kernel denies the PID allocation, triggering an OOM Crash simulation in the UI.
 - 💾 **Out of Storage:** The File System calculates block usage on the virtual disk. Attempting to save a file when blocks are full triggers a write failure, requiring the user to delete files to free up space.
