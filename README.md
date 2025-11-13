@@ -1,8 +1,18 @@
 # 🧠 WebOS - Simulated Operating System in the Browser
 
-A fully functional, **browser-based operating system simulation** built with **React**, **Zustand**, **GSAP**, and a custom-made **kernel architecture**. This isn’t just a styled window manager — it mimics how real operating systems manage memory, processes, storage, and scheduling.  
+A fully functional Research-Grade Operating System Simulation running entirely in the browser., **browser-based operating system simulation** built with **React**, **Zustand**, **GSAP**, and a custom-made **kernel architecture**. This isn’t just a styled window manager — it mimics how real operating systems manage memory, processes, storage, and scheduling.  
 
 Designed to help students **visualize OS internals**, explore resource constraints, and run multitasking apps inside a fully interactive system — right from their browser.
+
+---
+
+## 📖 Overview
+WebOS is not just a UI clone of a desktop environment. It is a comprehensive architectural simulation of an operating system kernel, bridging the gap between low-level systems programming and high-level web development.
+
+The project implements core OS concepts—Round Robin Scheduling, Process Context Switching, Memory Pagination, and Block-Based Storage—written in pure JavaScript, driving a reactive User Interface built with React.
+
+🌟 Core Philosophy: "The Kernel is King"
+Unlike typical desktop simulations where the UI manages the state, this project utilizes a "Kernel-First" Architecture. The UI is strictly a view layer; it never guesses the system state. Every action (opening a window, saving a file) is a request sent to the Kernel. The UI only updates when the Kernel grants permission and allocates resources.
 
 ---
 
@@ -28,29 +38,31 @@ Designed to help students **visualize OS internals**, explore resource constrain
 
 ---
 
-## 🧠 Simulated Kernel Modules
+## ⚙️ Technical Deep Dive
 
-### 📦 MemoryManager
+### The Custom Kernel
+
+#### 📦 MemoryManager
 - Implements **First-Fit Allocation**
 - Handles **Fragmentation Tracking**
 - Allocates and frees memory blocks dynamically based on process requirements
 
-### ⏱️ Scheduler
+#### ⏱️ Scheduler
 - Implements **Round Robin CPU Scheduling**
 - Allocates CPU time in cycles (quanta)
 - Simulates CPU overload and decay (usage drops over time if idle)
 
-### 💾 StorageSystem
+#### 💾 StorageSystem
 - **Block-Based Storage Architecture**
 - Manages raw storage blocks and interfaces with file system for low-level I/O
 - Mimics real-world disk layout principles
 
-### 📁 FileSystem
+#### 📁 FileSystem
 - Implements **Nested Hierarchical File Structure**
 - Supports folders, files, and nested traversal
 - File operations are backed by simulated block-level storage
 
-### 🧩 ProcessManager
+#### 🧩 ProcessManager
 - Creates, terminates, and tracks all app processes
 - Coordinates with memory and scheduler to maintain process states (`ready`, `running`, `waiting`)
 
