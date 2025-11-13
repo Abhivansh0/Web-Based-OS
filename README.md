@@ -143,11 +143,7 @@ graph TD
     subgraph "State Bridge (Zustand WindowStore)"
         direction TB
         Actions["Action Handlers<br/>(createApp, closeApp)"]
-        
-        %% The 3 Specific Arrays you mentioned
-        W_State["Windows Array<br/>(Z-Index, Pos, Size, ID)"]
-        P_State["Processes Array<br/>(Live CPU/RAM Stats)"]
-        T_State["OpenedApps Array<br/>(Active Icons List)"]
+        StoreData["WindowsStore State<br/>(Windows, Processes, OpenedApps Arrays)"]
     end
 
     subgraph "Core Kernel (Vanilla JS)"
@@ -176,14 +172,12 @@ graph TD
     Actions --x|Trigger Error State| ErrorUI
 
     %% --- FLOW 4: Data Sync (Kernel -> Store) ---
-    PM -.->|Sync Stats| P_State
-    PM -.->|Sync Lifecycle| T_State
-    PM -.->|Sync State| W_State
+    PM -.->|Sync All State| StoreData
 
     %% --- FLOW 5: Rendering (Store -> UI) ---
-    W_State ==>|Map Window Data| AppLoop
-    P_State ==>|Map Stats| TM
-    T_State ==>|Map Icons| TBar
+    StoreData ==>|Map Window Data| AppLoop
+    StoreData ==>|Map Stats| TM
+    StoreData ==>|Map Icons| TBar
 
     %% --- FLOW 6: The Registry Pattern ---
     AppLoop -->|Lookup App Name| Registry
