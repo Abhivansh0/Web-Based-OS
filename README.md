@@ -132,32 +132,60 @@ MIT — free to use, modify, and build on.
 ```mermaid
 graph TD
     subgraph "Presentation Layer (React + GSAP)"
-        UI["Desktop / Window Manager"]
-        Taskbar
-        Apps[Applications]
+        AppLoop["App.jsx Main Loop"]
+        Registry{"AppRegistry"}
+        WinSys["AppWindow Wrapper<br/>(Draggable/Resizable)"]
+        TBar["Taskbar Component"]
+        TM["Task Manager Component"]
+        ErrorUI["Error/Crash Dialogs"]
     end
 
-    subgraph "State Bridge (Zustand)"
-        Store[Authoritative Cache Store]
-        subgraph "Gatekeeper"
-            Actions[Request Handlers]
-        end
+    subgraph "State Bridge (Zustand WindowStore)"
+        direction TB
+        Actions["Action Handlers<br/>(createApp, closeApp)"]
+        
+        %% The 3 Specific Arrays you mentioned
+        W_State["Windows Array<br/>(Z-Index, Pos, Size, ID)"]
+        P_State["Processes Array<br/>(Live CPU/RAM Stats)"]
+        T_State["OpenedApps Array<br/>(Active Icons List)"]
     end
 
     subgraph "Core Kernel (Vanilla JS)"
-        PM[Process Manager]
-        MM[Memory Manager]
-        SCH["Scheduler (Round Robin)"]
-        FS[File System]
-        Disk[Storage System]
+        Context["Kernel Context"]
+        PM["Process Manager"]
+        MM["Memory Manager"]
+        SCH["Scheduler"]
+        FS["File System"]
+        Disk["Storage System"]
     end
 
-    UI -->|User Interaction| Actions
-    Actions -->|Request Resource| PM
-    Actions -->|Request I/O| FS
-    PM -->|Allocate| MM
-    PM -->|Schedule| SCH
-    FS -->|Write Blocks| Disk
-    
-    Store -.->|State Sync| UI
+    %% --- FLOW 1: User Interaction ---
+    TBar -->|Click Icon| Actions
+    WinSys -->|Close/Min/Max| Actions
+
+    %% --- FLOW 2: Kernel Authority ---
+    Actions -->|Request Resource| Context
+    Context -->|Allocate PID| PM
+    PM -->|Check Constraints| MM
+    PM -->|Time Slice| SCH
+    FS -->|Block Check| Disk
+
+    %% --- FLOW 3: Error Handling (The 'Sad' Path) ---
+    MM --x|OUT_OF_MEMORY| Actions
+    SCH --x|CPU_OVERLOAD| Actions
+    Actions --x|Trigger Error State| ErrorUI
+
+    %% --- FLOW 4: Data Sync (Kernel -> Store) ---
+    PM -.->|Sync Stats| P_State
+    PM -.->|Sync Lifecycle| T_State
+    PM -.->|Sync State| W_State
+
+    %% --- FLOW 5: Rendering (Store -> UI) ---
+    W_State ==>|Map Window Data| AppLoop
+    P_State ==>|Map Stats| TM
+    T_State ==>|Map Icons| TBar
+
+    %% --- FLOW 6: The Registry Pattern ---
+    AppLoop -->|Lookup App Name| Registry
+    Registry -->|Return Component| WinSys
 ```
