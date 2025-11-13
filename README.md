@@ -1,27 +1,30 @@
 # 🧠 WebOS - Simulated Operating System in the Browser
 
-A fully functional Research-Grade Operating System Simulation running entirely in the browser., **browser-based operating system simulation** built with **React**, **Zustand**, **GSAP**, and a custom-made **kernel architecture**. This isn’t just a styled window manager — it mimics how real operating systems manage memory, processes, storage, and scheduling.  
+## _A futuristic, research-grade OS… built with frontend tools. Because why not?_
 
-Designed to help students **visualize OS internals**, explore resource constraints, and run multitasking apps inside a fully interactive system — right from their browser.
+WebOS is a full operating system simulation implemented entirely in the browser.
+It models fundamental OS subsystems — process management, memory allocation, CPU scheduling, file systems, and storage — built using React, Zustand, GSAP, and a custom kernel architecture.
+This project is designed to bridge theory and practice, allowing students and developers to observe how low-level mechanisms behave under realistic constraints. The architecture models core OS principles such as:
 
----
+* Round Robin scheduling
+* First-Fit memory allocation
+* Fragmentation handling
+* Block-based disk storage
+* Hierarchical file system traversal
+* Kernel-led resource arbitration
 
-## 📖 Overview
-WebOS is not just a UI clone of a desktop environment. It is a comprehensive architectural simulation of an operating system kernel, bridging the gap between low-level systems programming and high-level web development.
-
-The project implements core OS concepts—Round Robin Scheduling, Process Context Switching, Memory Pagination, and Block-Based Storage—written in pure JavaScript, driving a reactive User Interface built with React.
-
-### 🌟 Core Philosophy: "The Kernel is King"
-Unlike typical desktop simulations where the UI manages the state, this project utilizes a **"Kernel-First" Architecture**.
-* The UI is strictly a **view layer**; it never guesses the system state.
-* Every action (opening a window, saving a file) is a **request** sent to the Kernel.
-* The UI only updates when the Kernel grants permission, allocates resources, and confirms the action.
+All system interactions occur through a **kernel-first control flow**, ensuring strict separation of the computational model and UI rendering.
 
 ---
+
 ## 🏗️ System Architecture
 
 This project is architected into three distinct layers to mimic real-world OS design. The **Zustand Store** acts as an "Authoritative Cache," synchronizing the high-speed UI with the low-level Kernel logic.
+* WebOS is built on a Kernel → Store → UI pipeline.
+* The UI is NEVER allowed to guess system state.
+* Everything goes through the kernel first.
 
+Below is the entire system in one diagram — the brain of WebOS:
 
 ```mermaid
 graph TD
@@ -109,9 +112,9 @@ graph TD
 
 ### 2. The Rendering Engine (Registry Pattern)
 
-- **App Registry:** A central dictionary maps string identifiers (e.g., "Terminal", "Calculator") to their React Components
+- **App Registry:** Maps app identifiers (“Terminal”, “Calculator”) to React components.
   
-- **Window Factory:** The main App loop listens to the `windowStore`. When a new window is added to the state, it looks up the component in the Registry.
+- **Window Factory:** App loop listens to `windowStore` and mounts apps dynamically.
   
 - **The Wrapper (`AppWindow`):** The resolved component is injected into a generic `<AppWindow />` wrapper. This wrapper handles all the "OS-level" behavior—dragging, resizing (via `react-rnd`), closing, and minimizing—while the app component inside remains purely functional and isolated.
 
@@ -196,7 +199,7 @@ Unlike standard web apps that have infinite virtual memory, WebOS enforces stric
 
 > “OS dev isn’t about the GUI — it’s about the guts.”  
 
-Unlike basic to-do apps or dashboards, this project replicates the **under-the-hood systems** that power modern computing — but does so visually and interactively.  
+WebOS is one of the few browser-based projects that simulates actual OS behavior, not just the appearance of one.
 
 It teaches by simulation.  
 It scales by architecture.  
