@@ -12,7 +12,6 @@ const ErrorBox = ({errorName, isError}) => {
   return (
     <>
     <div className="error-page">
-      
         <div className="error-box">
             <div className="errorImg">
                 <i className={errorMSG}></i>

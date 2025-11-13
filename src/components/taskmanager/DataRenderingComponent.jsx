@@ -16,10 +16,10 @@ const DataRenderComponent = () => {
       {processes.length > 0 ? (
         processes.map(proc => (
           <div key={proc.pid} className="data-row">
+            <div className="table-column">{proc.pid}.</div>
             <div className="table-column">{proc.processName}</div>
             <div className="table-column">{proc.memoryUsage} MB</div>
             <div className="table-column">{proc.cpuUsage}%</div>
-            <div className="table-column">{proc.pid}</div>
             <div className="table-column">
               {proc.state === 'running'
                 ? 'Running'
