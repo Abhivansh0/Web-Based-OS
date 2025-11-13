@@ -17,6 +17,12 @@ All system interactions occur through a **kernel-first control flow**, ensuring 
 
 ---
 
+## 📸 Preview — WebOS Boot Sequence (Early Build)
+
+<video src="assets/preview/webOSBoot.mp4" width="700" autoplay loop muted></video>
+
+---
+
 ## 🏗️ System Architecture
 
 This project is architected into three distinct layers to mimic real-world OS design. The **Zustand Store** acts as an "Authoritative Cache," synchronizing the high-speed UI with the low-level Kernel logic.
