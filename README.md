@@ -113,9 +113,9 @@ graph TD
 
 ### System Resilience & Error Simulation
 Unlike standard web apps that have infinite virtual memory, WebOS enforces strict, realistic resource constraints managed by the Kernel. The system implements a robust error-handling pipeline:
--🔥 **CPU Overload:** If the total CPU usage of active processes approaches 100%, the Scheduler throttles new process creation and the Kernel throws a CPU_OVERLOAD error, preventing system instability.
--🧠 **Out of Memory (OOM):** The Memory Manager tracks available blocks. If an app requests more memory than available (fragmentation or full usage), the Kernel denies the PID allocation, triggering an OOM Crash simulation in the UI.
--💾 **Out of Storage:** The File System calculates block usage on the virtual disk. Attempting to save a file when blocks are full triggers a write failure, requiring the user to delete files to free up space.
+- 🔥 **CPU Overload:** If the total CPU usage of active processes approaches 100%, the Scheduler throttles new process creation and the Kernel throws a CPU_OVERLOAD error, preventing system instability.
+- 🧠 **Out of Memory (OOM):** The Memory Manager tracks available blocks. If an app requests more memory than available (fragmentation or full usage), the Kernel denies the PID allocation, triggering an OOM Crash simulation in the UI.
+- 💾 **Out of Storage:** The File System calculates block usage on the virtual disk. Attempting to save a file when blocks are full triggers a write failure, requiring the user to delete files to free up space.
 
 ---
 
