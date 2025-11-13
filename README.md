@@ -179,6 +179,7 @@ Unlike standard web apps that have infinite virtual memory, WebOS enforces stric
 ✅ CPU & Memory Constraints + Errors  
 ✅ Multitasking + Window System  
 ✅ Taskbar 
+
 ✅ Task Manager stats view (In Progress)  
 
 ---
