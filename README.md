@@ -130,10 +130,9 @@ MIT — free to use, modify, and build on.
 ---
 
 ```mermaid
-
 graph TD
     subgraph "Presentation Layer (React + GSAP)"
-        UI[Desktop / Window Manager]
+        UI["Desktop / Window Manager"]
         Taskbar
         Apps[Applications]
     end
@@ -148,7 +147,7 @@ graph TD
     subgraph "Core Kernel (Vanilla JS)"
         PM[Process Manager]
         MM[Memory Manager]
-        SCH[Scheduler (Round Robin)]
+        SCH["Scheduler (Round Robin)"]
         FS[File System]
         Disk[Storage System]
     end
