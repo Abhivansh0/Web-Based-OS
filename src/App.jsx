@@ -58,10 +58,10 @@ const App = () => {
           })}
           </AnimatePresence>
           <AnimatePresence>
-          {IsStart && <StartMenu />}
+          {IsStart && <StartMenu key="start-menu" />}
           </AnimatePresence>
           <AnimatePresence>
-         {isTaskManagerOpen && <TaskManager />}
+         {isTaskManagerOpen && <TaskManager key="task-manager" />}
           </AnimatePresence>
         </main>
 
