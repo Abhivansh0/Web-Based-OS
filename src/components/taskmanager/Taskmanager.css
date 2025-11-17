@@ -2,9 +2,10 @@
 .taskmanager-container {
   font-family: "Oswald", sans-serif;
   /* font-family: "Poppins", sans-serif; */
-  /* background-color: #222; */
-  mix-blend-mode: difference;
+  background-color: #222;
+  /* mix-blend-mode: difference; */
   color: white;
+  outline: 1px solid rgba(255, 255, 255, 0.413);
   /* border: 1px solid white; */
   overflow-y: scroll;
   position: fixed;
@@ -13,7 +14,7 @@
   bottom: 65px;
   z-index: 101;
   padding: 20px;
-  border-radius: 1.5vw;
+  border-radius: 0.5vw;
   width: 35%;
   height: 70%;
   overflow-y: auto;
@@ -22,20 +23,23 @@
   /* font-size: ; */
   display: flex;
   /* border-bottom: 1px solid white; */
-  padding: 8px 0;
+  padding: 0px 0;
 }
 
 .header {
   font-weight: bold;
   /* background-color: white; */
   border-bottom: 1px solid white;
+  /* height: 100%; */
+  /* position: absolute; */
 }
 
 .table-column {
   flex: 1;
   padding: 0 10px;
   word-break: break-word;
-  /* border-left: 1px solid white ;
-  border-right: 1px solid white; */
+  /* border: 1px solid white; */
+  border-left: 1px solid rgb(255, 255, 255) ;
+  border-right: 1px solid rgba(255, 255, 255, 0);
 }
 

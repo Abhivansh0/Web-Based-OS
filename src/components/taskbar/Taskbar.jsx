@@ -14,7 +14,7 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
     gsap.from(centerRef.current, {
         duration:0.5,
       y:50,
-      delay:15,
+      delay:13,
       opacity:0
     })
   }, [])
@@ -38,7 +38,7 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
 
     const animation = (type) => {
         if (type === "start") {
-            if (TaskBarBig) {
+            if (taskManager && TaskBarBig) {
                 toggleTaskManager()
                 isStart()
             }
@@ -54,8 +54,8 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
                     }
                 });
             }
-            if (start) {
-                // isStart()
+            if (start && TaskBarBig) {
+                isStart()
                 // setTaskBarBig(false)
                 gsap.to(centerRef.current, {
                     delay:0.5,
@@ -66,14 +66,11 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
                     onComplete:()=>{
                         setTaskBarBig(false)
                     },
-                    onStart: () => {
-                        isStart(); // Moved from onStart to onComplete
-                    },
                 });
             }
         }
         else if (type === "taskManager") {
-            if (TaskBarBig) {
+            if (start && TaskBarBig) {
                 isStart()
                 toggleTaskManager()
             }
@@ -89,8 +86,8 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
                     }
                 });
             }
-            if (taskManager) {
-                // toggleTaskManager()
+            if (taskManager && TaskBarBig) {
+                toggleTaskManager()
                 // setTaskBarBig(false)
                 gsap.to(centerRef.current, {
                     delay:0.5,
@@ -100,9 +97,6 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
                     ease: "circ.inOut",
                     onComplete:()=>{
                         setTaskBarBig(false)
-                    },
-                    onStart: () => {
-                        toggleTaskManager(); // Moved from onStart to onComplete
                     },
                 });
             }
@@ -116,14 +110,17 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
             <div className="taskbar">
                 <div ref={centerRef} className=" taskbar_component taskbar_centre">
                     <div 
-                        className="start_btn cursor-target"
-                        onClick={()=>animation("start")} >
-                    </div>
+                        className=" task_btn start_btn cursor-target"
+                        onClick={()=>animation("start")} 
+                    >
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21H5C4.44772 21 4 20.5523 4 20V11L1 11L11.3273 1.6115C11.7087 1.26475 12.2913 1.26475 12.6727 1.6115L23 11L20 11V20C20 20.5523 19.5523 21 19 21ZM6 19H18V9.15745L12 3.7029L6 9.15745V19ZM8 15H16V17H8V15Z"></path></svg>                    </div>
                     <div
-                      className="taskmanager_btn cursor-target"
+                      className=" task_btn taskmanager_btn cursor-target"
                       onClick={()=>animation("taskManager")}
                     //   title="Open Task Manager"
-                    ></div>
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11 4H21V6H11V4ZM11 8H17V10H11V8ZM11 14H21V16H11V14ZM11 18H17V20H11V18ZM3 4H9V10H3V4ZM5 6V8H7V6H5ZM3 14H9V20H3V14ZM5 16V18H7V16H5Z"></path></svg>
+                    </div>
                     
                     
                     <div className="icons_dock">

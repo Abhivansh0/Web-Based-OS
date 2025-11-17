@@ -8,6 +8,7 @@
     transform: translateX(-50%);
     display: flex;
     justify-content: center;
+    /* mix-blend-mode: difference; */
 }
 
 .taskbar_centre{
@@ -16,7 +17,7 @@
     border: 1px solid rgba(255, 255, 255, 0.57);
     backdrop-filter: blur(10px);
     min-width: 45px;
-    border-radius: 2vw;
+    border-radius: 1vw;
     display: flex;
     justify-content: center;
     align-items: end;
@@ -48,14 +49,31 @@
     opacity: 1;
 }
 .start_btn{
-    border-radius: 10px;
+    border-radius: 0.5vw;
     height: 40px;
     width: 45px;
-    background-color: crimson;
+    /* background-color: crimson; */
 }
 .taskmanager_btn {
   width: 45px;
   height: 40px;
-  background-color: rgb(43, 38, 185);
-  border-radius: 10px;
+  border-radius: 0.5vw;
+}
+
+.task_btn{
+      display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid white;
+  mix-blend-mode: difference;
+}
+
+.task_btn svg{
+    width: 70%;
+    height: 70%;
+    /* color: white; */
+    /* color: transparent; */
+    /* mix-blend-mode: difference; */
+    -webkit-text-stroke-width: 1px;
+    color: white;
 }

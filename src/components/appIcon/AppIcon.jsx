@@ -24,7 +24,7 @@ const AppIcon = ({ iconName, iconImage, size, isError, setErrorName }) => {
     gsap.from(iconRef.current, {
       duration:0.5,
       y:50,
-      delay:15,
+      delay:13,
       opacity:0
     })
   }, [])
@@ -65,7 +65,7 @@ const AppIcon = ({ iconName, iconImage, size, isError, setErrorName }) => {
         <div className="iconImage">
           <img src={iconImage} alt="" />
         </div>
-        <div className="iconName">{iconName}</div>
+        <div className="iconName"><h4>{iconName}</h4></div>
 
       </div>
 
