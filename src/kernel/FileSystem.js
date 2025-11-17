@@ -51,7 +51,6 @@ class FileSystem {
         return newName;
     }
 
-
     createFile(filePath, content = "") {
         const pathArray = filePath.split("/").filter(str => str !== "");
         const fileName = pathArray.pop();

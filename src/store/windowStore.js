@@ -228,7 +228,7 @@ const useWindowStore = create((set, get) => ({
             }));
 
             updateProcessData(schedulerData);
-        }, 2000);
+        }, 500);
 
         set({ monitoringInterval });
     },

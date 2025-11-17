@@ -57,12 +57,16 @@ const App = () => {
             )
           })}
           </AnimatePresence>
+          <AnimatePresence>
           {IsStart && <StartMenu />}
+          </AnimatePresence>
+          <AnimatePresence>
          {isTaskManagerOpen && <TaskManager />}
+          </AnimatePresence>
         </main>
 
         <footer className='taskbar-footer'>
-          <Taskbar start={IsStart} isStart={handleStartView} toggleTaskManager={toggleTaskManager} />
+          <Taskbar start={IsStart} taskManager={isTaskManagerOpen} isStart={handleStartView} toggleTaskManager={toggleTaskManager} />
         </footer>
       </div>
     </>

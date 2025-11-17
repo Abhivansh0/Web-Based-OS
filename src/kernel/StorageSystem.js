@@ -30,7 +30,7 @@ class StorageSystem {
     }
 
     renamePath(oldPath, newPath){
-        if (this.fileTable[!oldPath]) {
+        if (!this.fileTable[oldPath]) {
             return {success: false, error: "FILE_NOT_FOUND"}
         }
         if (this.fileTable[newPath]) {

@@ -19,34 +19,18 @@ const Desktop = ({isError, setErrorName}) => {
 
   const tagRef = useRef()
 
-  useGSAP(()=>{
-    gsap.from(tagRef.current, {
-      delay:13,
-      scale:5,
-      duration:2,
-      ease:'expo.inOut'
-    })
-
-
-  })
-
   return (
     <>
       <div className="main_desktop">
 
       <div className="object">
-        <div ref={tagRef} className="tagline">
-          <h1>YOUR</h1>
-          <h1>OS IN</h1>
-          <h1>WEB3</h1>
-        </div>
 
         <video src={backVideo} autoPlay loop muted ></video>
       </div>
         
         <div className="icon_grid">
-          <AppIcon setErrorName={setErrorName} isError={isError} iconName={"Terminal"} iconImage={terminal} size={400} />
-          <AppIcon setErrorName={setErrorName} isError={isError} iconName={"Calculator"} iconImage={calculator} size={400} />
+          <AppIcon setErrorName={setErrorName} isError={isError} iconName={"Terminal"} iconImage={terminal} size={4096} />
+          <AppIcon setErrorName={setErrorName} isError={isError} iconName={"Calculator"} iconImage={calculator} size={4096} />
         </div>
       </div>
     </>
