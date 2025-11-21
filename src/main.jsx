@@ -5,9 +5,9 @@ import App from './App.jsx'
 import { KernelProvider } from './context/kernelContext.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <KernelProvider>
     <App />
     </KernelProvider>
-  </StrictMode>,
+  // </StrictMode>,
 )

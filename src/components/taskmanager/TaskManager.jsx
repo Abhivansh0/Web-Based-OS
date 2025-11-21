@@ -1,28 +1,30 @@
 import React from 'react'
 import './taskManager.css'
 import DataRenderComponent from './DataRenderingComponent'
-import {motion} from 'motion/react'
+import {motion, transform} from 'motion/react'
 
 const TaskManager = () => {
   return (
       <motion.div
+      transformTemplate={(transform, generated)=>
+        `translateX(-50%) ${generated}`
+      }
       initial={{
         opacity:0,
-        // y:100
+        y:30
       }}
       animate={{
         opacity:1,
-        // y:0
+        y:0
       }}
       exit={{
-        opacity:0
+        opacity:0,
+        y:30
       }}
       transition={{
         duration:0.5,
-        ease:'backInOut'
+        ease:'easeInOut'
       }}
-      onAnimationComplete={{}}
-        
        className="taskmanager-container">
         {/* <h2>Task Manager</h2> */}
 
