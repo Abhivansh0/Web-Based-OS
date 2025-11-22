@@ -209,6 +209,10 @@ const useWindowStore = create((set, get) => ({
     },
 
     processMonitoring: (getProcessStats) => {
+        const existingInterval = get().monitoringInterval
+        if (existingInterval) {
+            clearInterval(existingInterval)
+        }
         const { updateProcessData } = get();
 
         const monitoringInterval = setInterval(() => {
@@ -232,6 +236,15 @@ const useWindowStore = create((set, get) => ({
 
         set({ monitoringInterval });
     },
+
+    // In windowStore.js
+    // stopProcessMonitoring: () => {
+    //     const { monitoringInterval } = get();
+    //     if (monitoringInterval) {
+    //         clearInterval(monitoringInterval);
+    //         set({ monitoringInterval: null });
+    //     }
+    // },
 
 }
 
