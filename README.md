@@ -102,9 +102,11 @@ graph TD
 - Simulates CPU overload and decay (usage drops over time if idle)
 
 #### 💾 StorageSystem
-- **Block-Based Storage Architecture**
-- Manages raw storage blocks and interfaces with file system for low-level I/O
-- Mimics real-world disk layout principles
+- Implements a **Block-Based Virtual Disk**
+- Disk is divided into fixed-size blocks
+- Handles raw block allocation and deallocation
+- Maintains no concept of files, paths, or directories
+- Exposes low-level storage primitives to the File System
 
 #### 📁 FileSystem (Inode-Based)
 - Implements a **Unix-inspired inode file system**
