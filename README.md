@@ -10,7 +10,7 @@ This project is designed to bridge theory and practice, allowing students and de
 * First-Fit memory allocation
 * Fragmentation handling
 * Block-based disk storage
-* Hierarchical file system traversal
+* Inode-based FileSystem
 * Kernel-led resource arbitration
 
 All system interactions occur through a **kernel-first control flow**, ensuring strict separation of the computational model and UI rendering.
