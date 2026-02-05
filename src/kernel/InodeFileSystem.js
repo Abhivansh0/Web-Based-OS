@@ -8,7 +8,7 @@ class iNodeFileSystem {
         this.ss = storageSystem,
             this.BLOCK_SIZE = this.ss.blockSizeKB * 1024
         this.iNodeTable = {}                           // inode metaData is stored here ( 7={id: 7, type:file, blocks: [2, 3, 4], size: 48}  )
-            this.iNodeID = 0                                // The payload of each block index is stored in disk[block_index].payload
+        this.iNodeID = 0                                // The payload of each block index is stored in disk[block_index].payload
         this.rootInode = this.iNodeID++
         this.iNodeTable[this.rootInode] = {
             id: this.rootInode,
@@ -212,6 +212,26 @@ class iNodeFileSystem {
         return { success: true, parentInode: currentInode, childName: fileName }
     }
 
+    resolveInode(filePath) {
+        const parent = this.getParentNode(filePath)
+        if (!parent.success) {
+            return { success: false, error: parent.error }
+        }
+        const parentNode = parent.parentInode
+        const fileName = parent.childName
+
+        for (const block of parentNode.blocks) {
+            const entries = this.ss.disk[block].payload
+            for (const entry of entries) {
+                if (entry.name === fileName) {
+                    return { success: true, inodeId: entry.inodeId }
+                }
+            }
+        }
+
+        return { success: false, error: "FILE_NOT_FOUND" }
+    }
+
     resize(iNodeID, newSize) {
         // VALIDATING SIZE 
         if (newSize < 0) {
@@ -256,10 +276,29 @@ class iNodeFileSystem {
         return { success: true }
     }
 
-    writeFile(iNodeID, offset, data) {
+    resizePublic(filePath, newSize) {
+        const resolve = this.resolveInode(filePath)
+        if (!resolve.success) {
+            return { success: false, error: resolve.error }
+        }
+        const inodeId = resolve.inodeId
+        const resize = this.resize(inodeId, newSize)
+        if (!resize.success) {
+            return { success: false, error: resize.error }
+        }
+        return { success: true }
+    }
+
+    writeFile(filePath, offset, data) {
         if (offset < 0) {
             return { success: false, error: "INVALID_OFFSET" }
         }
+
+        const resolve = this.resolveInode(filePath)
+        if (!resolve.success) {
+            return { success: false, error: resolve.error }
+        }
+        const iNodeID = resolve.inodeId
 
         const inode = this.iNodeTable[iNodeID]
         if (!inode || inode.type !== "file") {
@@ -309,7 +348,12 @@ class iNodeFileSystem {
 
     }
 
-    readFile(inodeID) {
+    readFile(filePath) {
+        const resolve = this.resolveInode(filePath)
+        if (!resolve.success) {
+            return { success: false, error: resolve.error }
+        }
+        const inodeID = resolve.inodeId
         let text = ""
         const inode = this.iNodeTable[inodeID]
         if (!inode || inode.type !== "file") {
@@ -575,4 +619,43 @@ class iNodeFileSystem {
         return { success: true }
     }
 
+    list(filePath) {
+        let dirInode
+        if (filePath === "/") {
+            dirInode = this.iNodeTable[this.rootInode]
+        }
+        else {
+            const resolve = this.resolveInode(filePath)
+            if (!resolve.success) {
+                return { success: false, error: resolve.error }
+            }
+            dirInode = this.iNodeTable[resolve.inodeId]
+        }
+
+        if (!dirInode || dirInode.type !== "directory") {
+            return { success: false, error: "NOT_A_DIRECTORY" }
+        }
+        
+        const entries = []
+
+        for(const block of dirInode.blocks){
+            const payload = this.ss.disk[block].payload
+            for(const entry of payload){
+                const inode = this.iNodeTable[entry.inodeId]
+                if (!inode) continue
+
+                entries.push({
+                    name: entry.name,
+                    type: inode.type,
+                    size: inode.type === "file" ? inode.size : 0
+
+                })
+            }
+        }
+        return {success:true, entries}
+
+    }
+
 }
+
+export default iNodeFileSystem
