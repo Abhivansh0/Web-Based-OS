@@ -14,7 +14,7 @@
 .taskbar_centre{
     background-color: rgba(255, 255, 255, 0.056);
     padding: 0.5vw 1vw;
-    border: 1px solid rgba(255, 255, 255, 0.57);
+    /* border: 1px solid rgba(255, 255, 255, 0.105); */
     backdrop-filter: blur(10px);
     min-width: 45px;
     border-radius: 1vw;
@@ -27,6 +27,7 @@
     position: sticky;
     will-change: width;
     /* transition: width 0.3s ease; */
+    box-shadow: 0px 0px 40px 5px rgba(0, 0, 0, 0.41);
 }
 
 /* .taskbar_time{

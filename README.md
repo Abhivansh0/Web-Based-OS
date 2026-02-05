@@ -10,7 +10,7 @@ This project is designed to bridge theory and practice, allowing students and de
 * First-Fit memory allocation
 * Fragmentation handling
 * Block-based disk storage
-* Inode-based FileSystem
+* Hierarchical file system traversal
 * Kernel-led resource arbitration
 
 All system interactions occur through a **kernel-first control flow**, ensuring strict separation of the computational model and UI rendering.
@@ -102,29 +102,14 @@ graph TD
 - Simulates CPU overload and decay (usage drops over time if idle)
 
 #### 💾 StorageSystem
-- Implements a **Block-Based Virtual Disk**
-- Disk is divided into fixed-size blocks
-- Handles raw block allocation and deallocation
-- Maintains no concept of files, paths, or directories
-- Exposes low-level storage primitives to the File System
+- **Block-Based Storage Architecture**
+- Manages raw storage blocks and interfaces with file system for low-level I/O
+- Mimics real-world disk layout principles
 
-#### 📁 FileSystem (Inode-Based)
-- Implements a **Unix-inspired inode file system**
-- File identity is represented by **inode IDs**, not paths
-- Each inode stores:
-  - type (`file` / `directory`)
-  - size (authoritative logical file length)
-  - list of allocated disk blocks
-- Directories store **directory entries** (`name → inodeId`)
-- Supports:
-  - hierarchical directory traversal
-  - block-based file growth and shrink
-  - recursive directory deletion
-  - rename and move via directory relinking (no data copying)
-- Enforces strict file semantics:
-  - no sparse files
-  - writes allowed only at or before EOF
-  - `inode.size` defines the visible file boundary
+#### 📁 FileSystem
+- Implements **Nested Hierarchical File Structure**
+- Supports folders, files, and nested traversal
+- File operations are backed by simulated block-level storage
 
 #### 🧩 ProcessManager
 - Creates, terminates, and tracks all app processes

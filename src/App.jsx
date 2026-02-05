@@ -12,18 +12,15 @@ import iconRegistry from './store/iconRegistry'
 import { AnimatePresence } from "motion/react"
 import ErrorBox from './components/errorBox/ErrorBox'
 import useFileSystemStore from './store/FileSystemStore'
+import useComponentStore from './store/ComponentStore'
 import TaskManager from './components/taskmanager/TaskManager'
 import SubMenu from './components/SubMenu/SubMenu'
 
 const App = () => {
 
-  // const contextMenu = useFileSystemStore((state)=>state.contextMenu) 
-  // const openContextMenu = useFileSystemStore((state)=>state.openContextMenu()) 
-  // const closeContextMenu = useFileSystemStore((state)=>state.closeContextMenu) 
-
+  
   const { contextMenu, openContextMenu, closeContextMenu } = useFileSystemStore();
-
-  // const [localContextPosition, setlocalContextPosition] = useState({x:0, y:0})
+  const {startMenu, errorBox, boot, taskManager, appIcon, taskBar} = useComponentStore()
 
   useEffect(()=>{
     const handleGlobalRightClick = (e)=>{
@@ -37,27 +34,11 @@ const App = () => {
   }, [])
 
 
-  const stopProcessMonitoring = useWindowStore((state)=>state.stopProcessMonitoring)
-
   const [isError, setisError] = useState(false)
   const [errorName, seterrorName] = useState('')
-  // const [isContext, setisContext] = useState(false)
+
   const handleError = ()=>{setisError(!isError)}
-  const [isBooting, setIsBooting] = useState(true)
-  // const [isDesktop, setIsDesktop] = useState(false)
-  const [IsStart, setIsStart] = useState(false)
-  const [isTaskManagerOpen, setIsTaskManagerOpen] = useState(false)
-  
-  const handleStartView = () => {
-    setIsStart(!IsStart)
-  }
-  
-  const toggleTaskManager = () => {
-    // if (isTaskManagerOpen) {
-    //   stopProcessMonitoring()
-    // }
-  setIsTaskManagerOpen(!isTaskManagerOpen);
-}
+
 
   const windows = useWindowStore((state) => state.windows)
 
@@ -69,9 +50,17 @@ const App = () => {
         <main className='main_content'>
 
           <Desktop setErrorName={seterrorName} isError={handleError} />
+
+
           { isError && < ErrorBox errorName={errorName} isError={handleError} />}
+
+
           <TargetCursor spinDuration={2} hideDefaultCursor={true} />
-          {/* {isBooting && <BootScreen setBootScreen={setIsBooting} />} */}
+
+
+          { boot.isOpen && <BootScreen/>}
+
+
           <AnimatePresence>
           {windows.map((win) => {
             const Component = appRegistry[win.name]
@@ -86,20 +75,18 @@ const App = () => {
             )
           })}
           </AnimatePresence>
-          <AnimatePresence>
-          {IsStart && <StartMenu key="start-menu" />}
-          </AnimatePresence>
-          <AnimatePresence>
-         {isTaskManagerOpen && <TaskManager key="task-manager" />}
-          </AnimatePresence>
+
+
           <AnimatePresence>
           { contextMenu.isOpen && <SubMenu key="Context-menu" contextPosition={{x:contextMenu.x, y:contextMenu.y }} />}
           </AnimatePresence>
+
         </main>
 
         <footer className='taskbar-footer'>
-          <Taskbar start={IsStart} taskManager={isTaskManagerOpen} isStart={handleStartView} toggleTaskManager={toggleTaskManager} />
+          {taskBar.isOpen && <Taskbar/>}
         </footer>
+
       </div>
     </>
   )

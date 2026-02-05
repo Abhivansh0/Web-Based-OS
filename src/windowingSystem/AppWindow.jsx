@@ -181,26 +181,6 @@ const AppWindow = ({ windowData, children, appImg }) => {
     // FIX: Single useGSAP hook for minimize/restore logic
     const wasMinimized = useRef(false)
 
-    // useGSAP(() => {
-    //     if (isMinimized && !wasMinimized.current) {
-    //         // Window just got minimized - set flag
-    //         wasMinimized.current = true
-    //     } else if (!isMinimized && wasMinimized.current && windowRef.current && !isAnimating) {
-    //         // Restoring from minimize - animate back in
-    //         gsap.fromTo(windowRef.current,
-    //             { y: window.innerHeight + 100, scale: 0.8, opacity: 0.7 },
-    //             {
-    //                 y: 0,
-    //                 scale: 1,
-    //                 opacity: 1,
-    //                 duration: 0.6,
-    //                 ease: "power2.out"
-    //             }
-    //         )
-    //         wasMinimized.current = false
-    //     }
-    // }, [isMinimized, isAnimating])
-
     const handleMaximizeToggle = () => {
         if (isAnimating) return
         setIsAnimating(true)

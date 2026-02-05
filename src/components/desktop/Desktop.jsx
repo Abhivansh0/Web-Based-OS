@@ -13,22 +13,17 @@ import backVideo from '../../assets/images/background.mp4'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import useFileSystemStore from '../../store/FileSystemStore'
+import useComponentStore from '../../store/ComponentStore'
 
 const Desktop = ({isError, setErrorName}) => {
 
    const { contextMenu, openContextMenu, closeContextMenu } = useFileSystemStore();
+   const {appIcon} = useComponentStore()
+
 
     const handleRightClick = (e)=>{
     const mouseX = e.clientX;
     const mouseY = e.clientY;
-
-    // console.log(`Mouse Position: X=${mouseX}, Y=${mouseY}`);
-    // console.log(contextMenu)
-
-    const newPos = {
-      x: mouseX,
-      y: mouseY
-    }
     openContextMenu(mouseX, mouseY, "/")
 
   }
@@ -45,8 +40,8 @@ const Desktop = ({isError, setErrorName}) => {
       </div>
         
         <div className="icon_grid">
-          <AppIcon setErrorName={setErrorName} isError={isError} iconName={"Terminal"} iconImage={terminal} size={4096} />
-          <AppIcon setErrorName={setErrorName} isError={isError} iconName={"Calculator"} iconImage={calculator} size={4096} />
+          { appIcon.isOpen && <AppIcon setErrorName={setErrorName} isError={isError} iconName={"Terminal"} iconImage={terminal} size={4096}/>}
+          { appIcon.isOpen && <AppIcon setErrorName={setErrorName} isError={isError} iconName={"Calculator"} iconImage={calculator} size={4096} />}
         </div>
       </div>
     </>

@@ -15,6 +15,8 @@ class FileSystem {
                 children: {}
             }
         };
+        this.iNodeTable = {},
+        this.iNode = 1
     }
 
     getItemCaseInsensitive(directory, itemName) {

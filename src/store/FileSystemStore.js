@@ -1,7 +1,9 @@
-import { fieldset } from 'motion/react-client';
+import { useKernel } from '../context/kernelContext';
 import { create } from 'zustand'
 
+// const { fileSystem } = useKernel()
 const useFileSystemStore = create((set, get)=>({
+    fileSystem: null,
     FileTree:[],
     files:[],
     folders:[],
@@ -14,7 +16,10 @@ const useFileSystemStore = create((set, get)=>({
 
     },
 
+    setFileSystem: (fs) => set((state)=>({...state, fileSystem: fs})),
+
     openContextMenu: (x, y, path)=> set((state)=>({
+        ...state,
         contextMenu:{
             isOpen:true,
             x,
@@ -24,31 +29,54 @@ const useFileSystemStore = create((set, get)=>({
     })),
 
     closeContextMenu: ()=> set((state)=>({
+        ...state,
         contextMenu:{
             ...state.contextMenu,
             isOpen:false
         }
     })),
 
-    addFile: (fileData)=>{
-        const newFile = {
-            path: fileData.path,
-            content: fileData.content,
-            type: fileData.type
+    refreshDirectory: ()=>{
+        const fs = get().fileSystem
+        if (!fs) return
+        const currentTree = fs.rootDirectory
+        set((state)=>({...state, FileTree: {...currentTree}}))
+    },
+
+    createFile: (path, type)=>{
+        const fs = get().fileSystem
+        let result
+        if (type === "file") {
+            result=fs.createFile(path)
+        }
+        else if (type === "folder") {
+            result = fs.createFolder(path)
         }
 
-        if (fileData.type === "file") {
-            set((state)=>({
-                files: [...(state.files || []), newFile]
-            }))
+        if (result.success) {
+            get().refreshDirectory()
+            return {success:true}
         }
-        else if (fileData.type === "folder") {
-            set((state)=>({
-                folders: [...(state.folders || []), newFile]
-            }))
+
+        return {success: false, error: result.error}
+    },
+
+    deleteFile: (path)=>{
+        const fs = get().fileSystem
+        let result = fs.deleteFile(path)
+
+        if (result?.error === "FILE_DONT_EXIST") {
+            result = fs.deleteFolder(path)
         }
-        
+
+        if (result?.success) {
+            get().refreshDirectory()
+            return {success:true}
+        }
+
+        return {success: false, error: result.error}
     }
+
 }))
 
 export default useFileSystemStore;
