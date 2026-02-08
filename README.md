@@ -10,7 +10,7 @@ This project is designed to bridge theory and practice, allowing students and de
 * First-Fit memory allocation
 * Fragmentation handling
 * Block-based disk storage
-* Hierarchical file system traversal
+* Inode-based hierarchical file system traversal
 * Kernel-led resource arbitration
 
 All system interactions occur through a **kernel-first control flow**, ensuring strict separation of the computational model and UI rendering.
@@ -102,14 +102,28 @@ graph TD
 - Simulates CPU overload and decay (usage drops over time if idle)
 
 #### 💾 StorageSystem
-- **Block-Based Storage Architecture**
-- Manages raw storage blocks and interfaces with file system for low-level I/O
-- Mimics real-world disk layout principles
+- Implements a **Block-Based Virtual Disk**
+- Disk is divided into fixed-size blocks
+- Handles raw block allocation and deallocation
+- Maintains no concept of files, paths, or directories
+- Exposes low-level storage primitives to the File System
 
-#### 📁 FileSystem
-- Implements **Nested Hierarchical File Structure**
-- Supports folders, files, and nested traversal
-- File operations are backed by simulated block-level storage
+#### 📁 FileSystem (Inode-Based)
+- Implements a **Unix-inspired inode file system**
+- File identity is represented by **inode IDs**, not paths
+- Each inode stores:
+  - type (`file` / `directory`)
+  - size (authoritative logical file length)
+  - list of allocated disk blocks
+- Directories store **directory entries** (`name → inodeId`)
+- Supports:
+  - hierarchical directory traversal
+  - block-based file growth and shrink
+  - recursive directory deletion
+  - rename and move via directory relinking
+
+This design cleanly separates:
+**namespace (directories)**, **identity (inodes)**, and **storage (blocks)**.
 
 #### 🧩 ProcessManager
 - Creates, terminates, and tracks all app processes
@@ -180,9 +194,7 @@ Unlike standard web apps that have infinite virtual memory, WebOS enforces stric
 
 ## 📦 Under Construction
 
-- [ ] 🪄 **Task Manager App** (kill processes)
 - [ ] 💻 **Terminal Emulator**
-- [ ] 📁 **UI/UX FileSystem**
 - [ ] 🎨 **Full UI/UX Overhaul** after core features are finalized
 - [ ] 🧠 **4th Wall Apps** – playful and futuristic interactions
 - [ ] 🔐 **Access Control + User Simulation**
@@ -196,8 +208,11 @@ Unlike standard web apps that have infinite virtual memory, WebOS enforces stric
 ✅ Process Lifecycle Management  
 ✅ CPU & Memory Constraints + Errors  
 ✅ Multitasking + Window System  
+✅ UI/UX FileSystem  
 ✅ Task-Manager (process stats view)  
-✅ Taskbar 
+✅ Taskbar  
+
+
 
 ---
 
