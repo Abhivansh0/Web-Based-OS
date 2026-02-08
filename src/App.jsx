@@ -15,12 +15,13 @@ import useFileSystemStore from './store/FileSystemStore'
 import useComponentStore from './store/ComponentStore'
 import TaskManager from './components/taskmanager/TaskManager'
 import SubMenu from './components/SubMenu/SubMenu'
+import Popup from './components/createPopUp/Popup'
 
 const App = () => {
 
   
   const { contextMenu, openContextMenu, closeContextMenu } = useFileSystemStore();
-  const {startMenu, errorBox, boot, taskManager, appIcon, taskBar} = useComponentStore()
+  const {startMenu, errorBox, boot, taskManager, appIcon, taskBar, popUp} = useComponentStore()
 
   useEffect(()=>{
     const handleGlobalRightClick = (e)=>{
@@ -61,6 +62,10 @@ const App = () => {
           { boot.isOpen && <BootScreen/>}
 
 
+        <AnimatePresence>
+        { popUp.isOpen && <Popup/>}
+        </AnimatePresence>
+
           <AnimatePresence>
           {windows.map((win) => {
             const Component = appRegistry[win.name]
@@ -70,7 +75,7 @@ const App = () => {
             return (
 
               <AppWindow key={win.id} appImg={image} windowData={win}>
-                <Component />
+                <Component windowId={win.id} />
               </AppWindow>
             )
           })}

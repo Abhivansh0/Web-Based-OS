@@ -73,11 +73,11 @@ export const useKernel = () => {
     }
 
     const readFile = (filePath) => {
-        const { success, error } = fileSystem.readFile(filePath)
+        const { success, error, result } = fileSystem.readFile(filePath)
         if (!success) {
             return { success: false, error }
         }
-        return { success: true }
+        return { success: true, result }
     }
 
     const deleteFile = (filePath) => {
@@ -103,7 +103,7 @@ export const useKernel = () => {
         return { success: true }
     }
 
-    const writeFile = (filePath, offset, data)=>{
+    const writeFile = (filePath, offset, data) => {
         const { success, error } = fileSystem.writeFile(filePath, offset, data)
         if (!success) {
             return { success: false, error }
@@ -111,12 +111,20 @@ export const useKernel = () => {
         return { success: true }
     }
 
-    const listFiles = (filePath)=>{
-        const { success, error } = fileSystem.list(filePath)
+    const listFiles = (filePath) => {
+        const { success, error, entries } = fileSystem.list(filePath)
         if (!success) {
             return { success: false, error }
         }
-        return { success: true }
+        return { success: true, entries }
+    }
+
+    const renameFile = (filePath, newName) => {
+        const { success, error } = fileSystem.renameFile(filePath, newName)
+        if (!success) {
+            return { success: false, error }
+        }
+        return {success: true}
     }
 
     const createApp = (appName, size) => {
@@ -138,7 +146,7 @@ export const useKernel = () => {
     const getProcessStats = () => {
         return {
             running: processManager.getRunningProcess(),
-            all: processManager.getAllProcesses(),
+            all: processManager.listProcesses(),
             ready: processManager.getReadyQueue(),
             waiting: processManager.getWaitingQueue()
         }
@@ -159,13 +167,14 @@ export const useKernel = () => {
         deleteFile,
         deleteFolder,
         writeFile,
+        renameFile,
         moveFile,
         readFile,
+        listFiles,
         createApp,
         terminateApp,
         getProcessStats,
         getSystemStats,
-        listFiles,
         memoryManager,
         processManager,
         scheduler,

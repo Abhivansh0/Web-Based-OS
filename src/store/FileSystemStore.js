@@ -3,10 +3,6 @@ import { create } from 'zustand'
 
 // const { fileSystem } = useKernel()
 const useFileSystemStore = create((set, get)=>({
-    fileSystem: null,
-    FileTree:[],
-    files:[],
-    folders:[],
 
     contextMenu:{
         isOpen:false,
@@ -15,8 +11,31 @@ const useFileSystemStore = create((set, get)=>({
         path:null
 
     },
+    cwd: "/",
+    selected: null,
+    
+    select: (entry)=>set({selected:entry}),
 
-    setFileSystem: (fs) => set((state)=>({...state, fileSystem: fs})),
+    clearSelect: ()=>set({selected: null}),
+
+    setCwd: (fileName)=> set((state)=>({
+        cwd: state.cwd === "/" ? `/${fileName}`:`${state.cwd}/${fileName}`,
+        selected: null
+    })),
+
+    goBack: ()=> set((state)=>{
+        if (state.cwd === "/") {
+            return {cwd: "/"}
+        }
+        
+        const pathArray = state.cwd.split("/").filter(str => str !== "")
+        pathArray.pop()
+        return {
+            cwd: pathArray.length === 0 ?"/":`/${pathArray.join("/")}`,
+            selected: null
+        }
+    }),
+
 
     openContextMenu: (x, y, path)=> set((state)=>({
         ...state,
@@ -35,47 +54,6 @@ const useFileSystemStore = create((set, get)=>({
             isOpen:false
         }
     })),
-
-    refreshDirectory: ()=>{
-        const fs = get().fileSystem
-        if (!fs) return
-        const currentTree = fs.rootDirectory
-        set((state)=>({...state, FileTree: {...currentTree}}))
-    },
-
-    createFile: (path, type)=>{
-        const fs = get().fileSystem
-        let result
-        if (type === "file") {
-            result=fs.createFile(path)
-        }
-        else if (type === "folder") {
-            result = fs.createFolder(path)
-        }
-
-        if (result.success) {
-            get().refreshDirectory()
-            return {success:true}
-        }
-
-        return {success: false, error: result.error}
-    },
-
-    deleteFile: (path)=>{
-        const fs = get().fileSystem
-        let result = fs.deleteFile(path)
-
-        if (result?.error === "FILE_DONT_EXIST") {
-            result = fs.deleteFolder(path)
-        }
-
-        if (result?.success) {
-            get().refreshDirectory()
-            return {success:true}
-        }
-
-        return {success: false, error: result.error}
-    }
 
 }))
 

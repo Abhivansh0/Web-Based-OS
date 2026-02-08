@@ -7,22 +7,27 @@ const useComponentStore = create((set, get)=>({
     taskManager:{ isOpen: false },
     appIcon:{ isOpen: false },
     taskBar:{ isOpen: false, isBig: false },
+    popUp: {isOpen: false, type: null, call: null},
 
-    openComponent: (component)=>{set((state)=>({
+    openComponent: (component, payload = null, callPayload=null)=>{set((state)=>(({
         ...state,
         [component]:{
             ...state[component],
-            isOpen: true
+            isOpen: true,
+            type: payload ?? state[component].type,
+            call: callPayload ?? state[component].call
         }
-    }))},
+    })))},
 
-    closeComponent: (component)=>{set((state)=>({
+    closeComponent: (component)=>{set((state)=>(({
         ...state,
         [component]:{
             ...state[component],
-            isOpen: false
+            isOpen: false,
+            type: null,
+            call: null
         }
-    }))},
+    })))},
 
     toggleComponent: (component)=>{set((state)=>({
         ...state,

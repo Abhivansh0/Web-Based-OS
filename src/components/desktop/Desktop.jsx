@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import AppIcon from '../appIcon/AppIcon'
 import terminal from '../../assets/icons/terminal.png'
 import calculator from '../../assets/icons/calculator.png'
+import explorer from '../../assets/icons/folder.png'
 import '../desktop/desktop.css'
 import Spline from '@splinetool/react-spline';
 import Taskbar from '../taskbar/Taskbar'
@@ -42,6 +43,7 @@ const Desktop = ({isError, setErrorName}) => {
         <div className="icon_grid">
           { appIcon.isOpen && <AppIcon setErrorName={setErrorName} isError={isError} iconName={"Terminal"} iconImage={terminal} size={4096}/>}
           { appIcon.isOpen && <AppIcon setErrorName={setErrorName} isError={isError} iconName={"Calculator"} iconImage={calculator} size={4096} />}
+          { appIcon.isOpen && <AppIcon setErrorName={setErrorName} isError={isError} iconName={"File Explorer"} iconImage={explorer} size={4096} />}
         </div>
       </div>
     </>

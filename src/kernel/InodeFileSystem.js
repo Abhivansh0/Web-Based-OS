@@ -529,6 +529,10 @@ class iNodeFileSystem {
             return { success: false, error: "INVALID_PATH" }
         }
 
+        if (newName === "") {
+            return {success:false, error:"INVALID_NAME"}
+        }
+
         const fileName = parent.childName
         const parentNode = parent.parentInode
 

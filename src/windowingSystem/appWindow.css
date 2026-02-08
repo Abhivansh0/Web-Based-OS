@@ -40,13 +40,13 @@
     /* cursor: move; */
     /* padding: 2vw; */
     display: flex;
-    border-bottom: 1px solid #111;
+    /* border-bottom: 1px solid #111; */
     cursor: none;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 30px;
-    background-color: #111;
+    background-color: #212121;
     flex: 0 0 30px;
 }
 .app_name{
@@ -82,7 +82,7 @@
 }
 .window_btns button{
     cursor: none;
-    background-color: #111;
+    background-color: #212121;
     border: none;
     height: 100%;
     width: 2.5vw;
