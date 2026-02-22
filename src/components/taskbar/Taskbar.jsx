@@ -1,23 +1,21 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import "../taskbar/taskbar.css"
 import useWindowStore from '../../store/windowStore'
 import terminal from '../../assets/icons/terminal.png'
 import TaskbarIcon from '../taskbarIcon/TaskbarIcon'
 import iconRegistry from '../../store/iconRegistry'
-import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
-import { isTypedArray } from 'three/src/animation/AnimationUtils.js'
-import { AnimatePresence } from 'motion/react'
+import { AnimatePresence } from "motion/react"
+import useComponentStore from '../../store/ComponentStore'
+import { motion } from 'motion/react'
+import StartMenu from '../startMenu/StartMenu'
+import TaskManager from '../taskmanager/TaskManager'
 
-const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
-    useGSAP(() => {
-        gsap.from(centerRef.current, {
-            duration: 0.5,
-            y: 50,
-            delay: 1,
-            opacity: 0
-        })
-    }, [])
+
+
+const Taskbar = () => {
+
+    const { taskBar, taskManager, startMenu, openComponent, closeComponent, toggleComponent } = useComponentStore()
 
     const centerRef = useRef()
 
@@ -25,24 +23,16 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
 
     const openedApps = useWindowStore((state) => state.openedApps)
     const windows = useWindowStore((state) => state.windows)
-    const restoreMinimize = useWindowStore((state) => state.restoreMinimize)
-    const minimizeWindow = useWindowStore((state) => state.minimizeWindow)
-    const addWindow = useWindowStore((state) => state.addWindow);
     const bringTofront = useWindowStore((state) => state.bringToFront);
-    const closeWindow = useWindowStore((state) => state.closeWindow);
-    const toggleMinimize = useWindowStore((state) => state.toggleMinimize);
-    const maximizeWindow = useWindowStore((state) => state.maximizeWindow);
-    const moveWindow = useWindowStore((state) => state.moveWindow);
-    const resizeWindow = useWindowStore((state) => state.resizeWindow);
     const requestAnimation = useWindowStore((state) => state.requestAnimation)
 
     const animation = (type) => {
         if (type === "start") {
-            if (taskManager && TaskBarBig) {
-                toggleTaskManager()
-                isStart()
+            if (taskManager.isOpen && TaskBarBig) {
+                toggleComponent("taskManager")
+                toggleComponent("startMenu")
             }
-            if (!start && !TaskBarBig) {
+            if (!startMenu.isOpen && !TaskBarBig) {
                 gsap.to(centerRef.current, {
                     minWidth: "40vw",
                     height: "80vh",
@@ -50,18 +40,17 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
                     ease: 'circ.inOut',
                     onComplete: () => {
                         setTaskBarBig(true)
-                        isStart(); // Now isStart will only be called after animation completes
+                        openComponent("startMenu");
                     }
                 });
             }
-            if (start && TaskBarBig) {
-                isStart()
-                // setTaskBarBig(false)
+            if (startMenu.isOpen && TaskBarBig) {
+                closeComponent("startMenu")
                 gsap.to(centerRef.current, {
                     delay: 0.5,
                     minWidth: "104.56px",
                     height: '61px',
-                    duration: 1, // Added duration
+                    duration: 1,
                     ease: "circ.inOut",
                     onComplete: () => {
                         setTaskBarBig(false)
@@ -70,30 +59,29 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
             }
         }
         else if (type === "taskManager") {
-            if (start && TaskBarBig) {
-                isStart()
-                toggleTaskManager()
+            if (startMenu.isOpen && TaskBarBig) {
+                closeComponent("startMenu")
+                openComponent("taskManager")
             }
-            if (!taskManager && !TaskBarBig) {
+            if (!taskManager.isOpen && !TaskBarBig) {
                 gsap.to(centerRef.current, {
                     minWidth: "40vw",
                     height: "80vh",
                     duration: 1,
                     ease: 'circ.inOut',
                     onComplete: () => {
-                        toggleTaskManager(); // Now isStart will only be called after animation completes
+                        openComponent("taskManager");
                         setTaskBarBig(true)
                     }
                 });
             }
-            if (taskManager && TaskBarBig) {
-                toggleTaskManager()
-                // setTaskBarBig(false)
+            if (taskManager.isOpen && TaskBarBig) {
+                closeComponent("taskManager")
                 gsap.to(centerRef.current, {
                     delay: 0.5,
                     minWidth: "104.56px",
                     height: '61px',
-                    duration: 1, // Added duration
+                    duration: 1,
                     ease: "circ.inOut",
                     onComplete: () => {
                         setTaskBarBig(false)
@@ -108,7 +96,21 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
     return (
         <>
             <div className="taskbar">
-                <div ref={centerRef} className=" taskbar_component taskbar_centre">
+                <motion.div
+                    initial={{ y: 50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    ref={centerRef} className=" taskbar_component taskbar_centre">
+
+
+                    <AnimatePresence>
+                        {startMenu.isOpen && <StartMenu key="start-menu" />}
+                    </AnimatePresence>
+
+                    <AnimatePresence>
+                        {taskManager.isOpen && <TaskManager key="task-manager" />}
+                    </AnimatePresence>
+
                     <div
                         className=" task_btn start_btn cursor-target"
                         onClick={() => animation("start")}
@@ -150,7 +152,7 @@ const Taskbar = ({ isStart, start, toggleTaskManager, taskManager }) => {
                             })}
                         </AnimatePresence>
                     </div>
-                </div>
+                </motion.div>
                 {/* <div className=" taskbar_component taskbar_time">Hello</div> */}
 
             </div>

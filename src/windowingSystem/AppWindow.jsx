@@ -9,9 +9,11 @@ import useWindowStore from '../store/windowStore'
 import { useKernel } from '../context/kernelContext'
 import TargetCursor from '../components/cursor/TargetCursor'
 import {motion} from 'motion/react'
+import useFileEditorStore from '../store/fileEditorStore'
 
 const AppWindow = ({ windowData, children, appImg }) => {
     const { createApp, terminateApp, memoryManager, processManager, scheduler, storageSystem, fileSystem } = useKernel()
+    const {removeEditor, editors} = useFileEditorStore()
 
     const { id, name, cpuUsage, memoryUsage, state, size, position, zIndex, isMinimized, isMaximized, isFocused } = windowData
 
@@ -125,6 +127,10 @@ const AppWindow = ({ windowData, children, appImg }) => {
     const close = () => {
         closeWindow(id)
         terminateApp(id)
+        if (name==="File Editor") {
+            removeEditor(id)
+            console.log(editors)
+        }
     }
 
     const handleHover = (ref) => {
@@ -143,7 +149,7 @@ const AppWindow = ({ windowData, children, appImg }) => {
 
     const mouseLeave = (ref) => {
         gsap.to(ref.current, {
-            backgroundColor: "#111",
+            backgroundColor: "#212121",
             duration: 0.1
         })
     }
@@ -180,26 +186,6 @@ const AppWindow = ({ windowData, children, appImg }) => {
 
     // FIX: Single useGSAP hook for minimize/restore logic
     const wasMinimized = useRef(false)
-
-    // useGSAP(() => {
-    //     if (isMinimized && !wasMinimized.current) {
-    //         // Window just got minimized - set flag
-    //         wasMinimized.current = true
-    //     } else if (!isMinimized && wasMinimized.current && windowRef.current && !isAnimating) {
-    //         // Restoring from minimize - animate back in
-    //         gsap.fromTo(windowRef.current,
-    //             { y: window.innerHeight + 100, scale: 0.8, opacity: 0.7 },
-    //             {
-    //                 y: 0,
-    //                 scale: 1,
-    //                 opacity: 1,
-    //                 duration: 0.6,
-    //                 ease: "power2.out"
-    //             }
-    //         )
-    //         wasMinimized.current = false
-    //     }
-    // }, [isMinimized, isAnimating])
 
     const handleMaximizeToggle = () => {
         if (isAnimating) return
@@ -286,7 +272,7 @@ if (isMinimized && !isAnimating && wasMinimized.current) {
             <Rnd
             style={{
                 pointerEvents: isMinimized ? 'none':'all',
-                cursor: isMinimized ? 'none': ''
+                cursor: isMinimized ? 'none': '',
             }}
                 onDragStart={() => bringTofront(id)}
                 onResize={() => bringTofront(id)}
@@ -329,7 +315,7 @@ if (isMinimized && !isAnimating && wasMinimized.current) {
                 }}
                 
                 
-                 style={{ zIndex: zIndex }} onClick={() => bringTofront(id)} ref={windowRef} className="app_window">
+                 style={{ zIndex: zIndex, border: isMaximized?'none':'1px solid rgba(255, 255, 255, 0.219)' }} onClick={() => bringTofront(id)} ref={windowRef} className="app_window">
                     <div className="layer">
                         <div  className="layer-box"></div>
                         <div className="layer-box"></div>

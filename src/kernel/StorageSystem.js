@@ -1,60 +1,31 @@
 class StorageSystem {
+
     constructor(totalStorageKB, blockSizeKB) {
         this.totalKB = totalStorageKB
         this.blockSizeKB = blockSizeKB
         this.totalBlocks = Math.floor(this.totalKB / this.blockSizeKB)
         this.disk = new Array(this.totalBlocks).fill(null)
-        this.fileTable = {}
+        // this.fileTable = {}
     }
 
-    allocateStorage(path, sizeKB) {
-        if (this.fileTable[path]) {
-            return {success: false, error: "ALREADY_EXIST"}
-        }
-
-        const blocksNeeded = Math.ceil(sizeKB / this.blockSizeKB)
+    allocateStorage(blockCount){
         const freeBlocks = this.getFreeBlocksIndex()
-
-        if (freeBlocks.length < blocksNeeded) {
+        if (freeBlocks.length < blockCount) {
             return {success: false, error: "OUT_OF_STORAGE"}
         }
+
+        const allocatedBlocks = freeBlocks.slice(0, blockCount)
         
-        const allocatedBlocks = freeBlocks.slice(0, blocksNeeded)
-        allocatedBlocks.forEach(index => this.disk[index] = path)
-
-        this.fileTable[path] = {
-            size: sizeKB,
-            blocks: allocatedBlocks,
-        }
-        return {success: true}
-    }
-
-    renamePath(oldPath, newPath){
-        if (!this.fileTable[oldPath]) {
-            return {success: false, error: "FILE_NOT_FOUND"}
-        }
-        if (this.fileTable[newPath]) {
-            return {success: false, error: "ALREADY_EXIST"}
-        }
-        this.fileTable[newPath] = this.fileTable[oldPath]
-        this.fileTable[newPath].blocks.forEach(index=>{
-            this.disk[index] = newPath
+        allocatedBlocks.forEach(index => {
+            this.disk[index] = {payload: null}
         })
-
-        delete this.fileTable[oldPath]
-        return {success: true}
+        return {success: true, blocks: allocatedBlocks}
     }
 
-    deAllocateStorage(path) {
-        if (!this.fileTable[path]) {
-            return {success: false, error: "FILE_NOT_FOUND"}
+    deAllocateStorage(blockIndexes) {
+        for(const index of blockIndexes){
+            this.disk[index] = null
         }
-
-        const deAllocatingBlocks = this.fileTable[path].blocks
-        deAllocatingBlocks.forEach(index => this.disk[index] = null)
-        delete this.fileTable[path]
-
-        return {success: true}
     }
 
     getFreeBlocksIndex() {
@@ -70,13 +41,28 @@ class StorageSystem {
     }
 
 
-    listStorage() {
-        return Object.entries(this.fileTable).map(([path, meta]) => ({
-            path,
-            sizeKB: meta.size,
-            blocks: meta.blocks
-        }));
-    }
+    // listStorage() {
+    //     return Object.entries(this.fileTable).map(([ownerID, meta]) => ({
+    //         ownerID,
+    //         blocks: meta.blocks
+    //     }));
+    // }
+
+        // renamePath(oldPath, newPath){
+    //     if (!this.fileTable[oldPath]) {
+    //         return {success: false, error: "FILE_NOT_FOUND"}
+    //     }
+    //     if (this.fileTable[newPath]) {
+    //         return {success: false, error: "ALREADY_EXIST"}
+    //     }
+    //     this.fileTable[newPath] = this.fileTable[oldPath]
+    //     this.fileTable[newPath].blocks.forEach(index=>{
+    //         this.disk[index] = newPath
+    //     })
+
+    //     delete this.fileTable[oldPath]
+    //     return {success: true}
+    // }
 
 }
 

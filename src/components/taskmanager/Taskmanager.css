@@ -1,6 +1,7 @@
 .taskmanager-container {
   font-family: "Segoe UI", "Oswald", sans-serif;
   background: black;
+  /* width: 35%; */
   color: white;
   border: 1px solid dimgray;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
@@ -11,8 +12,8 @@
   z-index: 101;
   padding: 0;
   border-radius: 8px;
-  width: 40%;
-  height: 75%;
+  width: 90%;
+  height: 88%;
   overflow: hidden;
   backdrop-filter: blur(40px);
 }
@@ -83,7 +84,7 @@
   flex: 1;
   padding: 0 12px;
   word-break: break-word;
-  font-size: 13px;
+  font-size: 11px;
   color: gainsboro;
   display: flex;
   align-items: center;
@@ -179,3 +180,4 @@
   color: darkgray;
   line-height: 1.5;
 }
+

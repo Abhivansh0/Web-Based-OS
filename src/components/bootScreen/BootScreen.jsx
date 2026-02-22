@@ -5,11 +5,14 @@ import gsap from 'gsap'
 import { CSSPlugin } from "gsap/CSSPlugin";
 import LetterGlitch from './GlassSurface';
 import Squares from './Squares';
+import useComponentStore from '../../store/ComponentStore';
 
 gsap.registerPlugin(CSSPlugin);
 
 
-const BootScreen = ({ setBootScreen }) => {
+const BootScreen = () => {
+
+    const {boot, openComponent, closeComponent} = useComponentStore()
 
     function breakText(selector, spacing) {
         const elements = document.querySelectorAll(selector);
@@ -39,20 +42,24 @@ const BootScreen = ({ setBootScreen }) => {
     useGSAP(() => {
         const tl = gsap.timeline({
              delay: 1,
-             onComplete:()=>{setBootScreen(false)}
+             onComplete:()=>{
+                closeComponent("boot"),
+                openComponent("appIcon")
+                openComponent("taskBar")
+            }
              })
         tl.to(".up span", {
             // delay: 1,
             y: "-100%",
-            stagger: 0.25,
-            duration: 0.5,
+            stagger: 0.1,
+            duration: 0.8,
             repeat: 3
         })
         tl.to(".down span", {
             // delay: 1,
             y: "-100%",
-            stagger: 0.25,
-            duration: 0.5,
+            stagger: 0.1,
+            duration: 0.8,
             repeat: 3
         }, "0.01")
         tl.to(".load span", {
@@ -104,24 +111,15 @@ const BootScreen = ({ setBootScreen }) => {
             <div className="boot-layer-box"></div>
         </div>
             <div className="boot-container">
-                <div ref={upRef} className="boot-screen-up">
+                {/* <div ref={upRef} className="boot-screen-up">
                     <Squares
                         speed={0.5}
-                        squareSize={50}
+                        squareSize={30}
                         direction='diagonal' // up, down, left, right, diagonal
-                        borderColor='#7FA0AB'
-                        hoverFillColor='#7FA0AB'
+                        borderColor='white'
+                        hoverFillColor='white'
                     />
-                </div>
-                <div ref={downRef} className="boot-screen-down">
-                    <Squares
-                        speed={0.5}
-                        squareSize={50}
-                        direction='diagonal' // up, down, left, right, diagonal
-                        borderColor='#7FA0AB'
-                        hoverFillColor='#7FA0AB'
-                    />
-                </div>
+                </div> */}
                 <div className="loading">
                     <h1 className='load up' ref={breakRef} >LOADING</h1>
                     <h1 className='welcome'>WELCOME</h1>
